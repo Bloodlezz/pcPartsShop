@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'homepage' %}
+
+{% block body %}
+    <h1>Welcome</h1>
+
+    <div><a href="{{ path('login') }}">Login</a></div>
+    <div><a href="{{ path('register') }}">Register</a></div>
+    <div><a href="{{ path('logout') }}">Logout</a></div>
+
+    {% if app.user %}
+    <p>You logged in successfully! View your profile <a href="{{ path('profile') }}">here</a></p>
+    {% if is_granted('ROLE_ADMIN') %}
+        <p>Ooo, you are admin! You can <a href="{{ path('productCreate') }}">create product.</a></p>
+            {% endif %}
+    {% endif %}
+
+    {% for msg in app.session.flashbag.get('message') %}
+        <div class="alert alert-success" id="msg">
+            {{ msg }}
+        </div>
+    {% endfor %}
+
+    {% for product in prod %}
+    <p>{{ product.title }} -> <a href="{{ path('productView', {'id': product.id}) }}">view</a></p>
+    {% endfor %}
+{% endblock %}

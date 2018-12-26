@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'productView' %}
+
+{% block main %}
+
+    <p><a href="{{ path('homepage') }}">BACK TO HOMEPAGE</a></p>
+
+    <p><a href="{{ path('productEdit', {'id': product.id}) }}">edit product</a></p>
+
+    <p><a href="{{ path('productDelete', {'id': product.id}) }}">delete product</a></p>
+
+    <p>Title: {{ product.title }}</p>
+    <p>Description: {{ product.description }}</p>
+    <p>Price: {{ product.price }}</p>
+    <img src="{{ asset('images/uploads/products/' ~ product.image) }}" width="200" height="100" alt="">
+    <p>Top product: {{ product.topProduct }}</p>
+    <p>Ordered: {{ product.orderedCount }}</p>
+    <p>Category: {{ product.category.name }}</p>
+    <p>Uploaded by: {{ product.uploader.firstName }}</p>
+
+{% endblock %}

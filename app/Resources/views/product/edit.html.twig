@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'productEdit' %}
+
+{% block main %}
+
+    <form action="{{ path('productEdit', {'id': product.id}) }}" enctype="multipart/form-data" method="post">
+        <div>
+            <label for="title">Title: </label>
+            <input type="text" name="product[title]" id="title" value="{{ product.title|default('') }}">
+            {{ form_errors(form.title) }}
+        </div>
+        <div>
+            <label for="description">Description: </label>
+            <textarea name="product[description]" id="description">{{ product.description|default('') }}</textarea>
+            {{ form_errors(form.description) }}
+        </div>
+        <div>
+            <label for="price">Price: </label>
+            <input type="text" name="product[price]" id="price" value="{{ product.price|default('') }}">
+            {{ form_errors(form.price) }}
+        </div>
+        <div>
+            <label for="image">Image: </label>
+            <input type="file" name="product[image]" id="image">
+            {{ form_errors(form.image) }}
+        </div>
+        <div>
+            <label for="topProduct">Top product: </label>
+            <input type="checkbox" name="product[topProduct]" id="topProduct" {{ product is defined and product.topProduct is not empty ? 'checked' : '' }}>
+        </div>
+        <div>
+            <label for="category">Category: </label>
+            <select name="product[category]" id="category">
+                <option value="" {{ product is defined and product.category is not empty ? '' : 'selected' }}>choose</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {{ product is defined and product.category is not empty ? category.id == product.category.id ? 'selected' : '' }}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            {{ form_errors(form.category) }}
+        </div>
+        <div>
+            <button type="submit">Save</button>
+        </div>
+
+        {{  form_row(form._token) }}
+    </form>
+
+{% endblock %}

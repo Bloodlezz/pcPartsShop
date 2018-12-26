@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'profile' %}
+
+{% block main %}
+
+    <p><a href="{{ path('homepage') }}">BACK TO HOMEPAGE</a></p>
+
+    <p><a href="{{ path('profileEdit') }}">edit profile</a></p>
+
+    <p>First name: {{ user.firstName }}</p>
+    <p>Last name: {{ user.lastName }}</p>
+    <p>Email: {{ user.email }}</p>
+    <p>Phone number: {{ user.phone }}</p>
+    <p>User roles:</p>
+    <ul>
+        {% for role in user.roles %}
+            <li>{{ role }}</li>
+        {% endfor %}
+    </ul>
+    <p>Products uploaded by user:</p>
+    <ul>
+        {% for product in user.uploadedProducts %}
+        <li>{{ product.title }}</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
