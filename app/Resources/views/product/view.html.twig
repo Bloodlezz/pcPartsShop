@@ -19,4 +19,6 @@
     <p>Category: {{ product.category.name }}</p>
     <p>Uploaded by: {{ product.uploader.firstName }}</p>
 
+    <p><a href="{{ path('cartAdd', {'id': product.id}) }}">ADD TO CART</a></p>
+
 {% endblock %}

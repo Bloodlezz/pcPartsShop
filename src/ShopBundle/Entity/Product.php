@@ -2,6 +2,7 @@
 
 namespace ShopBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -113,12 +114,20 @@ class Product
     private $uploader;
 
     /**
+     * @var ArrayCollection|OrderItem[]
+     *
+     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\OrderItem", mappedBy="product")
+     */
+    private $orderItems;
+
+    /**
      * Product constructor.
      */
     public function __construct()
     {
         $this->orderedCount = 0;
         $this->added = new \DateTime('now');
+        $this->orderItems = new ArrayCollection();
     }
 
 
@@ -330,6 +339,26 @@ class Product
     public function setUploader(User $user): void
     {
         $this->uploader = $user;
+    }
+
+    /**
+     * @return ArrayCollection|OrderItem[]
+     */
+    public function getOrderItems()
+    {
+        return $this->orderItems;
+    }
+
+    /**
+     * @param OrderItem $orderItem
+     *
+     * @return Product
+     */
+    public function addOrderItem($orderItem): Product
+    {
+        $this->orderItems[] = $orderItem;
+
+        return $this;
     }
 }
 

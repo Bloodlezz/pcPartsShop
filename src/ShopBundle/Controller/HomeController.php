@@ -17,10 +17,11 @@ class HomeController extends Controller
     {
         $session = new Session();
 //        $session->set('test', 'testVal');
-        var_dump($request->getSession()->all());
+        //var_dump($request->getSession()->all());
 
         /** @var Product[] $rr */
         $rr = $this->getDoctrine()->getRepository(Product::class)->findAll();
+
         return $this->render('default/index.html.twig', ['prod' => $rr]);
     }
 }
