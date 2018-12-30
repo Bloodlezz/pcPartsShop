@@ -41,3 +41,6 @@ services:
 
     ShopBundle\Service\Category\CategoryServiceInterface:
         class: 'ShopBundle\Service\Category\CategoryService'
+
+    ShopBundle\Service\Cart\CartServiceInterface:
+        class: 'ShopBundle\Service\Cart\CartService'

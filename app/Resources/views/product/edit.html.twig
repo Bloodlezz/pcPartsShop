@@ -40,6 +40,10 @@
             {{ form_errors(form.category) }}
         </div>
         <div>
+            <label for="isActive">Active: </label>
+            <input type="checkbox" name="product[isActive]" id="isActive" {{ product is defined and product.active is not empty ? 'checked' : '' }}>
+        </div>
+        <div>
             <button type="submit">Save</button>
         </div>
 

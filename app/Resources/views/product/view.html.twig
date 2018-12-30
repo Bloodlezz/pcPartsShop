@@ -4,6 +4,12 @@
 
 {% block main %}
 
+    {% for msg in app.session.flashbag.get('message') %}
+        <div class="alert alert-success" id="msg">
+            {{ msg }}
+        </div>
+    {% endfor %}
+
     <p><a href="{{ path('homepage') }}">BACK TO HOMEPAGE</a></p>
 
     <p><a href="{{ path('productEdit', {'id': product.id}) }}">edit product</a></p>
@@ -17,8 +23,9 @@
     <p>Top product: {{ product.topProduct }}</p>
     <p>Ordered: {{ product.orderedCount }}</p>
     <p>Category: {{ product.category.name }}</p>
+    <p>Active: {{ product.active }}</p>
     <p>Uploaded by: {{ product.uploader.firstName }}</p>
 
-    <p><a href="{{ path('cartAdd', {'id': product.id}) }}">ADD TO CART</a></p>
+    <p><a href="{{ path('addToCart', {'productId': product.id}) }}">ADD TO CART</a></p>
 
 {% endblock %}

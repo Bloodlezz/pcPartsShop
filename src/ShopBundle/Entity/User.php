@@ -131,11 +131,11 @@ class User implements UserInterface
     private $uploadedProducts;
 
     /**
-     * @var ArrayCollection|Order[]
+     * @var ArrayCollection|CartItem[]
      *
-     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Order", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\CartItem", mappedBy="user")
      */
-    private $orders;
+    private $cartItems;
 
     /**
      * User constructor.
@@ -145,7 +145,7 @@ class User implements UserInterface
         $this->registered = new \DateTime('now');
         $this->roles = new ArrayCollection();
         $this->uploadedProducts = new ArrayCollection();
-        $this->orders = new ArrayCollection();
+        $this->cartItems = new ArrayCollection();
     }
 
     /**
@@ -393,23 +393,22 @@ class User implements UserInterface
     }
 
     /**
-     * @return ArrayCollection|Order[]
+     * @return ArrayCollection|CartItem[]
      */
-    public function getOrders()
+    public function getCartItems()
     {
-        return $this->orders;
+        return $this->cartItems;
     }
 
     /**
-     * @param Order $order
+     * @param CartItem $cartItem
      *
      * @return User
      */
-    public function addOrder($order): User
+    public function addToCart($cartItem): User
     {
-        $this->orders[] = $order;
+        $this->cartItems[] = $cartItem;
 
         return $this;
     }
 }
-

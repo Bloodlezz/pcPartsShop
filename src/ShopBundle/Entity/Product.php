@@ -96,6 +96,13 @@ class Product
     private $added;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="isActive", type="boolean")
+     */
+    private $isActive;
+
+    /**
      * @var Category
      *
      * @Assert\NotNull(message="Please choose product category!")
@@ -114,11 +121,11 @@ class Product
     private $uploader;
 
     /**
-     * @var ArrayCollection|OrderItem[]
+     * @var ArrayCollection|CartItem[]
      *
-     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\OrderItem", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\CartItem", mappedBy="product")
      */
-    private $orderItems;
+    private $cartItems;
 
     /**
      * Product constructor.
@@ -127,7 +134,8 @@ class Product
     {
         $this->orderedCount = 0;
         $this->added = new \DateTime('now');
-        $this->orderItems = new ArrayCollection();
+        $this->isActive = true;
+        $this->cartItems = new ArrayCollection();
     }
 
 
@@ -310,6 +318,22 @@ class Product
     }
 
     /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @param bool $isActive
+     */
+    public function setIsActive(bool $isActive): void
+    {
+        $this->isActive = $isActive;
+    }
+
+    /**
      * @return Category
      */
     public function getCategory()
@@ -342,21 +366,21 @@ class Product
     }
 
     /**
-     * @return ArrayCollection|OrderItem[]
+     * @return ArrayCollection|CartItem[]
      */
-    public function getOrderItems()
+    public function getCartItems()
     {
-        return $this->orderItems;
+        return $this->cartItems;
     }
 
     /**
-     * @param OrderItem $orderItem
+     * @param CartItem $cartItem
      *
      * @return Product
      */
-    public function addOrderItem($orderItem): Product
+    public function addCartItem($cartItem): Product
     {
-        $this->orderItems[] = $orderItem;
+        $this->cartItems[] = $cartItem;
 
         return $this;
     }

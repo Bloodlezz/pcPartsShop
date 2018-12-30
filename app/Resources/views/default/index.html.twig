@@ -11,6 +11,7 @@
 
     {% if app.user %}
     <p>You logged in successfully! View your profile <a href="{{ path('profile') }}">here</a></p>
+    <p>View your <a href="{{ path('cart') }}">cart</a></p>
     {% if is_granted('ROLE_ADMIN') %}
         <p>Ooo, you are admin! You can <a href="{{ path('productCreate') }}">create product.</a></p>
             {% endif %}
