@@ -128,6 +128,13 @@ class Product
     private $cartItems;
 
     /**
+     * @var ArrayCollection|OrderItem[]
+     *
+     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\OrderItem", mappedBy="product")
+     */
+    private $orderItems;
+
+    /**
      * Product constructor.
      */
     public function __construct()
@@ -136,6 +143,7 @@ class Product
         $this->added = new \DateTime('now');
         $this->isActive = true;
         $this->cartItems = new ArrayCollection();
+        $this->orderItems = new ArrayCollection();
     }
 
 
@@ -381,6 +389,26 @@ class Product
     public function addCartItem($cartItem): Product
     {
         $this->cartItems[] = $cartItem;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|OrderItem[]
+     */
+    public function getOrderItems()
+    {
+        return $this->orderItems;
+    }
+
+    /**
+     * @param OrderItem $orderItem
+     *
+     * @return Product
+     */
+    public function addOrderItem($orderItem): Product
+    {
+        $this->orderItems[] = $orderItem;
 
         return $this;
     }

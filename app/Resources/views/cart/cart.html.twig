@@ -10,6 +10,8 @@
         </div>
     {% endfor %}
 
+    <p><a href="{{ path('homepage') }}">BACK TO HOMEPAGE</a></p>
+
     {% set cartTotal = 0 %}
     <table>
         {% for cartItem in cartItems %}
@@ -30,6 +32,6 @@
         {% endfor %}
     </table>
 
-    <p>Total: {{ cartTotal }}</p>
+    <p>Total: {{ cartTotal|number_format(2, ".", "") }}</p>
 
 {% endblock %}
