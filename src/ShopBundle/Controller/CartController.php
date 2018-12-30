@@ -72,4 +72,41 @@ class CartController extends Controller
 
         return $this->render('cart/cart.html.twig', ['cartItems' => $cartItems]);
     }
+
+    /**
+     * @Route("/inc/{cartItemId}", name="increaseQty")
+     * @param int $cartItemId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function increaseItemQtyAction(int $cartItemId)
+    {
+        $this->cartService->increaseQty($cartItemId);
+
+        return $this->redirectToRoute('cart');
+    }
+
+    /**
+     * @Route("/dec/{cartItemId}", name="decreaseQty")
+     * @param int $cartItemId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function decreaseItemQtyAction(int $cartItemId)
+    {
+        $this->cartService->decreaseQty($cartItemId);
+
+        return $this->redirectToRoute('cart');
+    }
+
+    /**
+     * @Route("/remove/{cartItemId}", name="removeFromCart")
+     * @param int $cartItemId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function removeFromCartAction(int $cartItemId)
+    {
+        $this->cartService->removeFromCart($cartItemId);
+
+        $this->addFlash('message', 'Product removed successfully!');
+        return $this->redirectToRoute('cart');
+    }
 }

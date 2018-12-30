@@ -10,8 +10,6 @@ namespace ShopBundle\Service\Cart;
 
 
 use ShopBundle\Entity\CartItem;
-use ShopBundle\Entity\Product;
-use ShopBundle\Entity\User;
 
 interface CartServiceInterface
 {
@@ -26,4 +24,22 @@ interface CartServiceInterface
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function addToCart(CartItem $cartItemToAdd);
+
+    /**
+     * @param int $cartItemId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function increaseQty(int $cartItemId);
+
+    /**
+     * @param int $cartItemId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function decreaseQty(int $cartItemId);
+
+    /**
+     * @param int $cartItemId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function removeFromCart(int $cartItemId);
 }

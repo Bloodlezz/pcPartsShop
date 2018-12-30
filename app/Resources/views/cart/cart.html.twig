@@ -4,17 +4,32 @@
 
 {% block main %}
 
+    {% for msg in app.session.flashbag.get('message') %}
+        <div class="alert alert-success" id="msg">
+            {{ msg }}
+        </div>
+    {% endfor %}
+
+    {% set cartTotal = 0 %}
     <table>
         {% for cartItem in cartItems %}
             <tr>
+                <td><a href="{{ path('removeFromCart', {'cartItemId': cartItem.id}) }}">X</a></td>
                 <td>{{ cartItem.product.title }}</td>
                 <td>{{ cartItem.product.price }}</td>
+                {% if cartItem.quantity == 1 %}
+                    <td>-</td>
+                {% else %}
+                    <td><a href="{{ path('decreaseQty', {'cartItemId': cartItem.id}) }}">-</a></td>
+                {% endif %}
                 <td>{{ cartItem.quantity }}</td>
-                <td>{{ cartItem.calcProductTotal }}</td>
+                <td><a href="{{ path('increaseQty', {'cartItemId': cartItem.id}) }}">+</a></td>
+                <td>{{ cartItem.calcProductTotal|number_format(2, ".", "") }}</td>
+                {% set cartTotal = cartTotal + cartItem.calcProductTotal %}
             </tr>
         {% endfor %}
     </table>
 
-    <p>Total: </p>
+    <p>Total: {{ cartTotal }}</p>
 
 {% endblock %}

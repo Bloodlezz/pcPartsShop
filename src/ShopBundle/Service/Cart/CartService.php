@@ -10,8 +10,6 @@ namespace ShopBundle\Service\Cart;
 
 
 use ShopBundle\Entity\CartItem;
-use ShopBundle\Entity\Product;
-use ShopBundle\Entity\User;
 use ShopBundle\Repository\CartItemRepository;
 
 class CartService implements CartServiceInterface
@@ -52,20 +50,80 @@ class CartService implements CartServiceInterface
      */
     public function addToCart(CartItem $cartItemToAdd)
     {
-        $userCartItems = $cartItemToAdd->getUser()->getCartItems();
-        foreach ($userCartItems as $cartItem) {
-            if ($cartItem->getProduct()->getId() === $cartItemToAdd->getProduct()->getId()) {
-                if ($cartItem->getRemovedByUser() === true) {
-                    $cartItem->setRemovedByUser(false);
-                    $cartItem->setQuantity(1);
-                } else if ($cartItem->getIsOrdered() === false) {
-                    $cartItem->setQuantity($cartItem->getQuantity() + 1);
-                }
+        $currentUser = $cartItemToAdd->getUser();
+        $currentProduct = $cartItemToAdd->getProduct();
 
-                return $this->cartItemRepository->editCartItem($cartItem);
+        /** @var CartItem $foundInUserCart */
+        $foundInUserCart = $this->cartItemRepository->findOneBy(
+            [
+                'user' => $currentUser->getId(),
+                'product' => $currentProduct->getId(),
+                'isOrdered' => false
+            ]
+        );
+
+        if ($foundInUserCart) {
+            if ($foundInUserCart->getRemovedByUser()) {
+                $foundInUserCart->setRemovedByUser(false);
+                $foundInUserCart->setQuantity(1);
+            } else {
+                $foundInUserCart->setQuantity($foundInUserCart->getQuantity() + 1);
             }
+
+            return $this->cartItemRepository->editCartItem($foundInUserCart);
         }
 
         return $this->cartItemRepository->addToCart($cartItemToAdd);
+    }
+
+    /**
+     * @param int $cartItemId
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function increaseQty(int $cartItemId)
+    {
+        /** @var CartItem $cartItem */
+        $cartItem = $this->cartItemRepository->find($cartItemId);
+
+        if ($cartItem) {
+            $cartItem->setQuantity($cartItem->getQuantity() + 1);
+
+            return $this->cartItemRepository->editCartItem($cartItem);
+        }
+    }
+
+    /**
+     * @param int $cartItemId
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function decreaseQty(int $cartItemId)
+    {
+        /** @var CartItem $cartItem */
+        $cartItem = $this->cartItemRepository->find($cartItemId);
+
+        if ($cartItem) {
+            $cartItem->setQuantity($cartItem->getQuantity() - 1);
+
+            return $this->cartItemRepository->editCartItem($cartItem);
+        }
+    }
+
+    /**
+     * @param int $cartItemId
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function removeFromCart(int $cartItemId)
+    {
+        /** @var CartItem $cartItem */
+        $cartItem = $this->cartItemRepository->find($cartItemId);
+
+        if ($cartItem) {
+            $cartItem->setRemovedByUser(true);
+
+            return $this->cartItemRepository->editCartItem($cartItem);
+        }
     }
 }
