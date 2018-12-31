@@ -92,8 +92,11 @@ class CartController extends Controller
      */
     public function decreaseItemQtyAction(int $cartItemId)
     {
-        $this->cartService->decreaseQty($cartItemId);
+        if ($this->cartService->decreaseQty($cartItemId)) {
+            return $this->redirectToRoute('cart');
+        }
 
+        $this->addFlash('message', 'Product quantity can\'t be less than 1!');
         return $this->redirectToRoute('cart');
     }
 

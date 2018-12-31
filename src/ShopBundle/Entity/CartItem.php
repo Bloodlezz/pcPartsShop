@@ -192,7 +192,7 @@ class CartItem
     /**
      * @return float|int
      */
-    public function calcProductTotal()
+    public function calcProductAmount()
     {
         return $this->getProduct()->getPrice() * $this->getQuantity();
     }

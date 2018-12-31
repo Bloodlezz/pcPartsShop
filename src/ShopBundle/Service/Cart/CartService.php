@@ -96,18 +96,21 @@ class CartService implements CartServiceInterface
     /**
      * @param int $cartItemId
      * @throws \Doctrine\ORM\OptimisticLockException
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return boolean
      */
     public function decreaseQty(int $cartItemId)
     {
         /** @var CartItem $cartItem */
         $cartItem = $this->cartItemRepository->find($cartItemId);
 
-        if ($cartItem) {
+        if ($cartItem && 1 < $cartItem->getQuantity()) {
             $cartItem->setQuantity($cartItem->getQuantity() - 1);
 
-            return $this->cartItemRepository->editCartItem($cartItem);
+            $this->cartItemRepository->editCartItem($cartItem);
+            return true;
         }
+
+        return false;
     }
 
     /**

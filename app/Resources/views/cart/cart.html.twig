@@ -26,8 +26,8 @@
                 {% endif %}
                 <td>{{ cartItem.quantity }}</td>
                 <td><a href="{{ path('increaseQty', {'cartItemId': cartItem.id}) }}">+</a></td>
-                <td>{{ cartItem.calcProductTotal|number_format(2, ".", "") }}</td>
-                {% set cartTotal = cartTotal + cartItem.calcProductTotal %}
+                <td>{{ cartItem.calcProductAmount|number_format(2, ".", "") }}</td>
+                {% set cartTotal = cartTotal + cartItem.calcProductAmount %}
             </tr>
         {% endfor %}
     </table>

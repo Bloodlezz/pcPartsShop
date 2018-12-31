@@ -71,6 +71,7 @@ class Order
     public function __construct()
     {
         $this->created = new \DateTime('now');
+        $this->status = "dd";
         $this->orderItems = new ArrayCollection();
     }
 
