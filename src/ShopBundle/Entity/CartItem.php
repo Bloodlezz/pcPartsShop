@@ -196,5 +196,20 @@ class CartItem
     {
         return $this->getProduct()->getPrice() * $this->getQuantity();
     }
+
+    /**
+     * @param int $currentUserId
+     * @return bool
+     */
+    public function checkOwnership(int $currentUserId)
+    {
+        if ($currentUserId === $this->getUser()->getId()) {
+            if ($this->getRemovedByUser() === false && $this->getIsOrdered() === false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 

@@ -23,7 +23,7 @@ class CartItemRepository extends \Doctrine\ORM\EntityRepository
      * @param CartItem $cartItem
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function addToCart(CartItem $cartItem)
+    public function addCartItem(CartItem $cartItem)
     {
         $this->_em->persist($cartItem);
         $this->_em->flush($cartItem);

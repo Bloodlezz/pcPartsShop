@@ -27,19 +27,22 @@ interface CartServiceInterface
 
     /**
      * @param int $cartItemId
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param int $userId
+     * @return boolean
      */
-    public function increaseQty(int $cartItemId);
+    public function increaseQty(int $cartItemId, int $userId);
 
     /**
      * @param int $cartItemId
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param int $userId
+     * @return boolean
      */
-    public function decreaseQty(int $cartItemId);
+    public function decreaseQty(int $cartItemId, int $userId);
 
     /**
      * @param int $cartItemId
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param int $userId
+     * @return boolean
      */
-    public function removeFromCart(int $cartItemId);
+    public function removeFromCart(int $cartItemId, int $userId);
 }

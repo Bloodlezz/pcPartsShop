@@ -80,7 +80,7 @@ class CartController extends Controller
      */
     public function increaseItemQtyAction(int $cartItemId)
     {
-        $this->cartService->increaseQty($cartItemId);
+        $this->cartService->increaseQty($cartItemId, $this->getUser()->getId());
 
         return $this->redirectToRoute('cart');
     }
@@ -92,11 +92,8 @@ class CartController extends Controller
      */
     public function decreaseItemQtyAction(int $cartItemId)
     {
-        if ($this->cartService->decreaseQty($cartItemId)) {
-            return $this->redirectToRoute('cart');
-        }
+        $this->cartService->decreaseQty($cartItemId, $this->getUser()->getId());
 
-        $this->addFlash('message', 'Product quantity can\'t be less than 1!');
         return $this->redirectToRoute('cart');
     }
 
@@ -107,9 +104,12 @@ class CartController extends Controller
      */
     public function removeFromCartAction(int $cartItemId)
     {
-        $this->cartService->removeFromCart($cartItemId);
+        if ($this->cartService->removeFromCart($cartItemId, $this->getUser()->getId())) {
+            $this->addFlash('message', 'Product removed successfully!');
+        } else {
+            $this->addFlash('message', 'Product can\'t be removed! Please try again.');
+        }
 
-        $this->addFlash('message', 'Product removed successfully!');
         return $this->redirectToRoute('cart');
     }
 }

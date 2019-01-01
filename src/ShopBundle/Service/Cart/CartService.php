@@ -73,41 +73,27 @@ class CartService implements CartServiceInterface
             return $this->cartItemRepository->editCartItem($foundInUserCart);
         }
 
-        return $this->cartItemRepository->addToCart($cartItemToAdd);
+        return $this->cartItemRepository->addCartItem($cartItemToAdd);
     }
 
     /**
      * @param int $cartItemId
+     * @param int $userId
      * @throws \Doctrine\ORM\OptimisticLockException
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return boolean
      */
-    public function increaseQty(int $cartItemId)
+    public function increaseQty(int $cartItemId, int $userId)
     {
         /** @var CartItem $cartItem */
         $cartItem = $this->cartItemRepository->find($cartItemId);
 
         if ($cartItem) {
-            $cartItem->setQuantity($cartItem->getQuantity() + 1);
+            if ($cartItem->checkOwnership($userId)) {
+                $cartItem->setQuantity($cartItem->getQuantity() + 1);
 
-            return $this->cartItemRepository->editCartItem($cartItem);
-        }
-    }
-
-    /**
-     * @param int $cartItemId
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @return boolean
-     */
-    public function decreaseQty(int $cartItemId)
-    {
-        /** @var CartItem $cartItem */
-        $cartItem = $this->cartItemRepository->find($cartItemId);
-
-        if ($cartItem && 1 < $cartItem->getQuantity()) {
-            $cartItem->setQuantity($cartItem->getQuantity() - 1);
-
-            $this->cartItemRepository->editCartItem($cartItem);
-            return true;
+                $this->cartItemRepository->editCartItem($cartItem);
+                return true;
+            }
         }
 
         return false;
@@ -115,18 +101,48 @@ class CartService implements CartServiceInterface
 
     /**
      * @param int $cartItemId
+     * @param int $userId
      * @throws \Doctrine\ORM\OptimisticLockException
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return boolean
      */
-    public function removeFromCart(int $cartItemId)
+    public function decreaseQty(int $cartItemId, int $userId)
     {
         /** @var CartItem $cartItem */
         $cartItem = $this->cartItemRepository->find($cartItemId);
 
         if ($cartItem) {
-            $cartItem->setRemovedByUser(true);
+            if ($cartItem->checkOwnership($userId)) {
+                if (1 < $cartItem->getQuantity()) {
+                    $cartItem->setQuantity($cartItem->getQuantity() - 1);
 
-            return $this->cartItemRepository->editCartItem($cartItem);
+                    $this->cartItemRepository->editCartItem($cartItem);
+                    return true;
+                }
+            }
         }
+
+        return false;
+    }
+
+    /**
+     * @param int $cartItemId
+     * @param int $userId
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return boolean
+     */
+    public function removeFromCart(int $cartItemId, int $userId)
+    {
+        /** @var CartItem $cartItem */
+        $cartItem = $this->cartItemRepository->find($cartItemId);
+
+        if ($cartItem) {
+            if ($cartItem->checkOwnership($userId)) {
+                $cartItem->setRemovedByUser(true);
+                $this->cartItemRepository->editCartItem($cartItem);
+                return true;
+            }
+        }
+
+        return false;
     }
 }
