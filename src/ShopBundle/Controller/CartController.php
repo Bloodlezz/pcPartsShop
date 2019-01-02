@@ -5,7 +5,6 @@ namespace ShopBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use ShopBundle\Entity\CartItem;
 use ShopBundle\Entity\Product;
-use ShopBundle\Entity\User;
 use ShopBundle\Service\Cart\CartServiceInterface;
 use ShopBundle\Service\Product\ProductServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

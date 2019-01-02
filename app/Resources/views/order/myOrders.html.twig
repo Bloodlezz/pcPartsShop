@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'myOrders' %}
+
+{% block main %}
+
+    <h1>My orders</h1>
+
+    {% for msg in app.session.flashbag.get('message') %}
+        <div class="alert alert-success" id="msg">
+            {{ msg }}
+        </div>
+    {% endfor %}
+
+    <p><a href="{{ path('homepage') }}">BACK TO HOMEPAGE</a></p>
+
+    <table>
+        {% for order in orders %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ order.created|date("d-m-Y") }}</td>
+                <td>{{ order.total }}</td>
+                <td>{{ order.status }}</td>
+                <td><a href="{{ path('orderView', {'orderId': order.id}) }}">view</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

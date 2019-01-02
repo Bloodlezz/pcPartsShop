@@ -67,11 +67,13 @@ class Order
 
     /**
      * Order constructor.
+     * @param User $user
      */
-    public function __construct()
+    public function __construct(User $user)
     {
+        $this->user = $user;
         $this->created = new \DateTime('now');
-        $this->status = "dd";
+        $this->status = "processing";
         $this->orderItems = new ArrayCollection();
     }
 

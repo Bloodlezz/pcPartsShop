@@ -34,4 +34,9 @@
 
     <p>Total: {{ cartTotal|number_format(2, ".", "") }}</p>
 
+    <form method="post" action="{{ path('orderCreate') }}">
+        <input type="number" name="total" hidden value="{{ cartTotal|number_format(2, ".", "") }}">
+        <button type="submit">ORDER</button>
+    </form>
+
 {% endblock %}
