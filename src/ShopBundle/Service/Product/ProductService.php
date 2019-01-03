@@ -103,22 +103,21 @@ class ProductService implements ProductServiceInterface
 
     /**
      * @param Product $product
-     * @param string $uploadDir
-     * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function deleteProduct(Product $product, string $uploadDir)
+    public function deactivateProduct(Product $product)
     {
-        $currentImgFullPath = $uploadDir . $product->getImage();
+//        $currentImgFullPath = $uploadDir . $product->getImage();
+//
+//        try {
+//            if ($this->fileSystem->exists($currentImgFullPath)) {
+//                $this->fileSystem->remove($currentImgFullPath);
+//            }
+//        } catch (FileException $ex) {
+//            $ex->getMessage();
+//        }
 
-        try {
-            if ($this->fileSystem->exists($currentImgFullPath)) {
-                $this->fileSystem->remove($currentImgFullPath);
-            }
-        } catch (FileException $ex) {
-            $ex->getMessage();
-        }
-
-        return $this->productRepository->delete($product);
+        return $this->productRepository->edit($product);
     }
 }

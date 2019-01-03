@@ -39,8 +39,7 @@ interface ProductServiceInterface
 
     /**
      * @param Product $product
-     * @param string $uploadDir
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function deleteProduct(Product $product, string $uploadDir);
+    public function deactivateProduct(Product $product);
 }

@@ -4,23 +4,52 @@
 
 {% block main %}
 
-    {% if error %}
-        <div>{{ error.message | replace({"Bad credentials." : "Invalid email or password."}) }}</div>
-    {% endif %}
+    <div class="container mt-3">
 
-    <form name="authenticate" action="{{ path('login') }}" method="post">
-        <div>
-            <label for="email">Email: </label>
-            <input type="email" name="_username" id="email" value="{{ last_username }}">
-        </div>
-        <div>
-            <label for="password">Password: </label>
-            <input type="password" name="_password" id="password">
-        </div>
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
-        <div>
-            <button type="submit">Login</button>
-        </div>
-    </form>
+        <h2>Sign in</h2>
+
+        <form name="authenticate" action="{{ path('login') }}" method="post">
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email"
+                       name="_username"
+                       class="form-control"
+                       id="email"
+                       value="{{ last_username }}"
+                       placeholder="please enter valid email"
+                >
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password"
+                       name="_password"
+                       class="form-control"
+                       id="password"
+                       placeholder="password">
+            </div>
+
+            {% if error %}
+                <div class="form-group row">
+                    <div class="col-12">
+                        <ul class="list-unstyled alert alert-danger">
+                            <li><i class="fa fa-exclamation-triangle"
+                                   aria-hidden="true"></i> {{ error.message | replace({"Bad credentials." : "Invalid email or password."}) }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+
+            <span class="element-divider mt-3 mb-2"></span>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+            <div>
+                <button type="submit" class="btn btn-primary">Sign in</button>
+
+                <a href="{{ path('register') }}"><button type="button" class="btn btn-primary">New user</button></a>
+            </div>
+        </form>
+
+    </div>
 
 {% endblock %}

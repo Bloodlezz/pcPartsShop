@@ -156,21 +156,23 @@ class ProductController extends Controller
     }
 
     /**
-     * @Route("/delete/{id}", name="productDelete")
+     * @Route("/deactivate/{id}", name="productDeactivate")
      * @Security("is_granted('ROLE_ADMIN')")
      * @param int $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function deleteAction(int $id)
+    public function deactivateAction(int $id)
     {
         /** @var Product $product */
         $product = $this->productService->getProductById($id);
 
         if ($product) {
-            $uploadDir = $this->getParameter('products_images');
-            $this->productService->deleteProduct($product, $uploadDir);
+            // $uploadDir = $this->getParameter('products_images');
+            // $this->productService->deleteProduct($product, $uploadDir);
+            $product->setIsActive(false);
+            $this->productService->deactivateProduct($product);
 
-            $this->addFlash('message', 'Product deleted successfully.');
+            $this->addFlash('message', 'Product deactivated successfully.');
             return $this->redirectToRoute('homepage');
         }
 

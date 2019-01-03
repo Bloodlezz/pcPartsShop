@@ -39,13 +39,13 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
         $this->_em->flush($product);
     }
 
-    /**
-     * @param Product $product
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function delete($product)
-    {
-        $this->_em->remove($product);
-        $this->_em->flush($product);
-    }
+//    /**
+//     * @param Product $product
+//     * @throws \Doctrine\ORM\OptimisticLockException
+//     */
+//    public function delete($product)
+//    {
+//        $this->_em->remove($product);
+//        $this->_em->flush($product);
+//    }
 }

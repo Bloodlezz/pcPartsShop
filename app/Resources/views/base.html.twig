@@ -1,18 +1,149 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-    </head>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Online shop{% endblock %}</title>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        <link rel="stylesheet" href="{{ asset('font-awesome-4.7.0/css/font-awesome.min.css') }}">
+    {% endblock %}
 
-    <body id="{% block body_id %}{% endblock %}">
+    {% block javascripts %}
+        <script src="{{ asset('js/jquery-3.3.1.min.js') }}"></script>
+        <script src="{{ asset('js/moment.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.js') }}"></script>
+    {% endblock %}
 
-        {% block body %}
-            {% block main %}{% endblock %}
-        {% endblock %}
-        {% block javascripts %}{% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
 
-    </body>
+    <meta name="author" content="Konstantin Lazarov">
+    <meta name="description" content="Online shop for PC hardware">
+    <meta name="keywords" content="online, shop, pc, hardware">
+</head>
+
+<body id="{% block body_id %}{% endblock %}">
+
+{% block header %}
+    <header>
+        <div class="container">
+            <nav class="navbar navbar-expand-sm navbar-light bg-light">
+
+                {# Logo #}
+                <a href="{{ path('homepage') }}" class="navbar-brand">
+                    <img src="{{ asset('images/your-logo-here.png') }}" alt="Logo image" class="mw-100 small-logo">
+                </a>
+
+                {#Nav button#}
+                <button class="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    {#Products#}
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle active-color big-fonts" href="#" id="products"
+                               role="button" data-toggle="dropdown" aria-haspopup="true"
+                               aria-expanded="false">Products</a>
+                            <div class="dropdown-menu" aria-labelledby="products">
+                                <a class="dropdown-item" href="category.php?id=motherboards"><?php echo $mbLang; ?></a>
+                            </div>
+                        </li>
+                    </ul>
+
+                    {#Profile lists#}
+                    <ul class="navbar-nav mr-auto">
+                        {% if app.user %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle active-color big-fonts" href="#" title="Profile"
+                                   id="profile" role="button" data-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false">
+                                    <i class="fa fa-user big-fonts" aria-hidden="true"></i>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="profile">
+                                    <a class="dropdown-item" href="{{ path('myOrders') }}">My orders</a>
+                                    <a class="dropdown-item" href="{{ path('profile') }}">Profile settings</a>
+                                    <a class="dropdown-item" href="">Administration panel</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{{ path('logout') }}">Sign out</a>
+                                </div>
+                            </li>
+
+                        {% else %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle big-fonts" href="#" title="Profile" id="profile"
+                                   role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-user-times big-fonts" aria-hidden="true"></i>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="profile">
+                                    <a class="dropdown-item" href="{{ path('login') }}">Sign in</a>
+                                    <a class="dropdown-item" href="{{ path('register') }}">Sign up</a>
+                                </div>
+                            </li>
+                        {% endif %}
+                    </ul>
+
+                    {#Cart#}
+                    <a class="nav-link no-padding-l big-fonts" href="{{ path('cart') }}" title="Cart">
+                        <i class="fa fa-opencart active-color font-weight-bold" aria-hidden="true"></i>
+                        <span class="badge badge-light">
+                    </span>
+                    </a>
+
+                    {#Search#}
+                    <form method="GET" action="search.php" class="form-inline my-2 my-lg-0 hide-search">
+                        <div class="block-el">
+                            <input type="search" name="search" class="form-control mr-sm-2" placeholder="Search">
+                        </div>
+                        <div class="block-el">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        </div>
+                    </form>
+
+                </div>
+            </nav>
+
+            {#Search < 700px#}
+            <form method="GET" action="search.php" class="show-search my-2 my-lg-0">
+                <div class="form-row">
+                    <div class="col-10">
+                        <input type="search" name="search" class="form-control" placeholder="Search">
+                    </div>
+                    <div class="col-2">
+                        <button class="form-control btn btn-outline-success hide-btn" type="submit">Search</button>
+                        <button class="form-control btn btn-outline-success show-btn" type="submit">Go</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+    </header>
+{% endblock %}
+
+{% block body %}
+    {% block main %}{% endblock %}
+{% endblock %}
+
+{% block footer %}
+    <footer>
+        <div class="container mt-5">
+            <div class="breadcrumb footer-col">
+                <div class="row">
+                    <div class="col-sm">contacts: <u><a href="mailto:k0si0.lazarov@gmail.com">k0si0.lazarov@gmail.com</a></u></div>
+                </div>
+
+                <div class="row text-center">
+                    <div class="col-sm">&copy 2019 Konstantin Lazarov All Rights Reserved&reg</div>
+                </div>
+            </div>
+        </div>
+    </footer>
+{% endblock %}
+
+</body>
 </html>
