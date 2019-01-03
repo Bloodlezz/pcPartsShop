@@ -79,7 +79,7 @@ class UserController extends Controller
     {
         /** @var User $user */
         $user = $this->getUser();
-        $currentHashedPass = $this->getUser()->getPassword();
+        $currentHashedPass = $user->getPassword();
         $form = $this->createForm(UserType::class, $user, ['validation_groups' => 'Default']);
         $form->handleRequest($request);
 

@@ -40,7 +40,9 @@ class UserService implements UserServiceInterface
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param RoleRepository $roleRepository
      */
-    public function __construct(UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder, RoleRepository $roleRepository)
+    public function __construct(UserRepository $userRepository,
+                                UserPasswordEncoderInterface $passwordEncoder,
+                                RoleRepository $roleRepository)
     {
         $this->userRepository = $userRepository;
         $this->passwordEncoder = $passwordEncoder;
@@ -82,15 +84,17 @@ class UserService implements UserServiceInterface
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function edit(User $user, string $currentHashedPass)
+    public function edit(User $user, string $currentHashedPass = null)
     {
-        if (null === $user->getPassword()) {
-            $user->setPassword($currentHashedPass);
-        } else {
-            $hashedPassword = $this->passwordEncoder
-                ->encodePassword($user, $user->getPassword());
+        if ($currentHashedPass !== null) {
+            if (null === $user->getPassword()) {
+                $user->setPassword($currentHashedPass);
+            } else {
+                $hashedPassword = $this->passwordEncoder
+                    ->encodePassword($user, $user->getPassword());
 
-            $user->setPassword($hashedPassword);
+                $user->setPassword($hashedPassword);
+            }
         }
 
         return $this->userRepository->edit($user);

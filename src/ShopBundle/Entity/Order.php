@@ -220,5 +220,13 @@ class Order
 
         return $this;
     }
+
+    /**
+     * @param User|object $currentUser
+     * @return boolean
+     */
+    public function isOwner(User $currentUser) {
+        return $this->getUser() === $currentUser;
+    }
 }
 

@@ -9,16 +9,23 @@
 namespace ShopBundle\Service\Order;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use ShopBundle\Entity\CartItem;
+use ShopBundle\Entity\Order;
 
 interface OrderServiceInterface
 {
     /**
      * @param CartItem[] $cartItems
-     * @param float $formTotal
+     * @param $formTotal
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function createOrder(array $cartItems, float $formTotal);
+    public function createOrder(array $cartItems, $formTotal);
+
+    /**
+     * @return ArrayCollection|Order[]
+     */
+    public function getOrdersByDateDescending();
 
     /**
      * @param int $orderId

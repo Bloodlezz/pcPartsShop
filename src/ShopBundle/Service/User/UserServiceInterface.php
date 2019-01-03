@@ -30,5 +30,5 @@ interface UserServiceInterface
      * @param string $currentHashedPass
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function edit(User $user, string $currentHashedPass);
+    public function edit(User $user, string $currentHashedPass = null);
 }

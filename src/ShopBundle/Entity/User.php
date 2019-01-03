@@ -140,7 +140,7 @@ class User implements UserInterface
     /**
      * @var ArrayCollection|Order[]
      *
-     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Order", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Order", mappedBy="user", cascade={"persist"})
      */
     private $orders;
 

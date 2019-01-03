@@ -15,6 +15,7 @@ use ShopBundle\Entity\Order;
 use ShopBundle\Entity\OrderItem;
 use ShopBundle\Entity\User;
 use ShopBundle\Repository\OrderRepository;
+use ShopBundle\Service\User\UserServiceInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -36,48 +37,80 @@ class OrderService implements OrderServiceInterface
     private $security;
 
     /**
+     * @var UserServiceInterface
+     */
+    private $userService;
+
+    /**
+     * @var User
+     */
+    private $currentUser;
+
+    /**
      * OrderService constructor.
      * @param OrderRepository $orderRepository
+     * @param RequestStack $request
+     * @param TokenStorageInterface $security
+     * @param UserServiceInterface $userService
      */
-    public function __construct(OrderRepository $orderRepository, RequestStack $request, TokenStorageInterface $security)
+    public function __construct(OrderRepository $orderRepository,
+                                RequestStack $request,
+                                TokenStorageInterface $security,
+                                UserServiceInterface $userService)
     {
         $this->orderRepository = $orderRepository;
         $this->request = $request;
         $this->security = $security;
+        $this->userService = $userService;
+        $this->currentUser = $security->getToken()->getUser();
     }
 
 
     /**
      * @param CartItem[] $cartItems
-     * @param float $formTotal
+     * @param $formTotal
      * @throws \Doctrine\ORM\OptimisticLockException
      * @return boolean
      */
-    public function createOrder(array $cartItems, float $formTotal)
+    public function createOrder(array $cartItems, $formTotal)
     {
-        /** @var User $currentUser */
-        $currentUser = $this->security->getToken()->getUser();
-        $order = new Order($currentUser);
-        $orderTotal = 0;
+        $orderTotal = $this->getCartTotal($cartItems);
 
-        /** @var CartItem $cartItem */
-        foreach ($cartItems as $cartItem) {
-            $currentAmount = $cartItem->getProduct()->getPrice() * $cartItem->getQuantity();
-            $orderTotal += $currentAmount;
-            $currentOrderItem = new OrderItem();
-            $currentOrderItem->setProduct($cartItem->getProduct());
-            $currentOrderItem->setQuantity($cartItem->getQuantity());
-            $currentOrderItem->setAmount($currentAmount);
-            $order->addOrderItem($currentOrderItem);
+        if (abs($orderTotal - $formTotal) < 0.000001) {
+
+            $order = new Order($this->currentUser);
+
+            /** @var CartItem $cartItem */
+            foreach ($cartItems as $cartItem) {
+                $currentAmount = $cartItem->getProduct()->getPrice() * $cartItem->getQuantity();
+                $currentOrderItem = new OrderItem();
+                $currentOrderItem->setProduct($cartItem->getProduct());
+                $currentOrderItem->setQuantity($cartItem->getQuantity());
+                $currentOrderItem->setAmount($currentAmount);
+                $cartItem->setIsOrdered(true);
+                $order->addOrderItem($currentOrderItem);
+            }
+
+            $order->setTotal($orderTotal);
+            $this->orderRepository->create($order);
+            // SET ALL CART ITEMS IN CART AS ORDERED
+            $this->userService->edit($this->currentUser);
+            return true;
         }
 
-        if ($orderTotal !== $formTotal) {
-            return false;
-        }
+        return false;
+    }
 
-        $order->setTotal($orderTotal);
-        $this->orderRepository->create($order);
-        return true;
+    /**
+     * @return ArrayCollection|Order[]
+     */
+    public function getOrdersByDateDescending()
+    {
+        return $this->orderRepository
+            ->findBy(
+                ['user' => $this->currentUser->getId()],
+                ['created' => 'DESC']
+            );
     }
 
     /**
@@ -86,6 +119,27 @@ class OrderService implements OrderServiceInterface
      */
     public function viewOrder(int $orderId)
     {
-        return $this->orderRepository->find($orderId);
+        /** @var Order $currentOrder */
+        $currentOrder = $this->orderRepository->find($orderId);
+
+        if ($currentOrder->isOwner($this->currentUser)) {
+            return $currentOrder;
+        }
+    }
+
+    /**
+     * @param ArrayCollection|CartItem[] $cartItems
+     */
+    private function getCartTotal(array $cartItems)
+    {
+        $cartTotal = 0;
+
+        /** @var CartItem $cartItem */
+        foreach ($cartItems as $cartItem) {
+            $currentAmount = $cartItem->getProduct()->getPrice() * $cartItem->getQuantity();
+            $cartTotal += $currentAmount;
+        }
+
+        return $cartTotal;
     }
 }

@@ -22,6 +22,9 @@ class CartController extends Controller
      */
     private $cartService;
 
+    /**
+     * @var ProductServiceInterface
+     */
     private $productService;
 
     /**
@@ -67,7 +70,7 @@ class CartController extends Controller
     public function cartAction()
     {
         /** @var CartItem[] $cartItems */
-        $cartItems = $this->cartService->getUserCart($this->getUser()->getId());
+        $cartItems = $this->cartService->getUserCart();
 
         return $this->render('cart/cart.html.twig', ['cartItems' => $cartItems]);
     }
@@ -79,7 +82,7 @@ class CartController extends Controller
      */
     public function increaseItemQtyAction(int $cartItemId)
     {
-        $this->cartService->increaseQty($cartItemId, $this->getUser()->getId());
+        $this->cartService->increaseQty($cartItemId);
 
         return $this->redirectToRoute('cart');
     }
@@ -91,7 +94,7 @@ class CartController extends Controller
      */
     public function decreaseItemQtyAction(int $cartItemId)
     {
-        $this->cartService->decreaseQty($cartItemId, $this->getUser()->getId());
+        $this->cartService->decreaseQty($cartItemId);
 
         return $this->redirectToRoute('cart');
     }
@@ -103,7 +106,7 @@ class CartController extends Controller
      */
     public function removeFromCartAction(int $cartItemId)
     {
-        if ($this->cartService->removeFromCart($cartItemId, $this->getUser()->getId())) {
+        if ($this->cartService->removeFromCart($cartItemId)) {
             $this->addFlash('message', 'Product removed successfully!');
         } else {
             $this->addFlash('message', 'Product can\'t be removed! Please try again.');

@@ -43,7 +43,7 @@ class OrderController extends Controller
     {
         if ($request->getMethod() === "POST") {
             $formTotal = $request->request->get('total');
-            $cartItems = $this->cartService->getUserCart($this->getUser()->getId());
+            $cartItems = $this->cartService->getUserCart();
 
             if ($this->orderService->createOrder($cartItems, $formTotal) === false) {
                 $this->addFlash('message', 'Some product price was changed!');
@@ -53,7 +53,7 @@ class OrderController extends Controller
             $this->addFlash('message', 'Order created successfully.');
         }
 
-        return $this->redirectToRoute('homepage');
+        return $this->redirectToRoute('myOrders');
     }
 
     /**
@@ -64,13 +64,14 @@ class OrderController extends Controller
     public function myOrdersAction()
     {
         /** @var Order[] $orders */
-        $orders = $this->getUser()->getOrders();
+        $orders = $this->orderService->getOrdersByDateDescending();
 
         return $this->render('order/myOrders.html.twig', ['orders' => $orders]);
     }
 
     /**
      * @Route("order/view/{orderId}", name="orderView")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @param int $orderId
      * @return \Symfony\Component\HttpFoundation\Response
      */

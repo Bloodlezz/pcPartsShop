@@ -9,8 +9,11 @@
 namespace ShopBundle\Service\Cart;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use ShopBundle\Entity\CartItem;
+use ShopBundle\Entity\User;
 use ShopBundle\Repository\CartItemRepository;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class CartService implements CartServiceInterface
 {
@@ -20,25 +23,40 @@ class CartService implements CartServiceInterface
     private $cartItemRepository;
 
     /**
+     * @var TokenStorageInterface
+     */
+    private $security;
+
+    /**
+     * @var User
+     */
+    private $currentUser;
+
+    /**
      * CartService constructor.
      * @param CartItemRepository $cartItemRepository
+     * @param TokenStorageInterface $security
      */
-    public function __construct(CartItemRepository $cartItemRepository)
+    public function __construct(CartItemRepository $cartItemRepository, TokenStorageInterface $security)
     {
         $this->cartItemRepository = $cartItemRepository;
+        $this->security = $security;
+        $this->currentUser = $security->getToken()->getUser();
     }
 
     /**
-     * @param int $userId
-     * @return CartItem[]|object|null
+     * @return ArrayCollection|CartItem[]|null
      */
-    public function getUserCart(int $userId)
+    public function getUserCart()
     {
         return $this->cartItemRepository->findBy(
             [
-                'user' => $userId,
+                'user' => $this->currentUser->getId(),
                 'removedByUser' => false,
                 'isOrdered' => false
+            ],
+            [
+                'dateAdded' => 'DESC'
             ]
         );
     }
@@ -50,13 +68,12 @@ class CartService implements CartServiceInterface
      */
     public function addToCart(CartItem $cartItemToAdd)
     {
-        $currentUser = $cartItemToAdd->getUser();
         $currentProduct = $cartItemToAdd->getProduct();
 
         /** @var CartItem $foundInUserCart */
         $foundInUserCart = $this->cartItemRepository->findOneBy(
             [
-                'user' => $currentUser->getId(),
+                'user' => $this->currentUser->getId(),
                 'product' => $currentProduct->getId(),
                 'isOrdered' => false
             ]
@@ -66,6 +83,7 @@ class CartService implements CartServiceInterface
             if ($foundInUserCart->getRemovedByUser()) {
                 $foundInUserCart->setRemovedByUser(false);
                 $foundInUserCart->setQuantity(1);
+                $foundInUserCart->setDateAdded(new \DateTime('now'));
             } else {
                 $foundInUserCart->setQuantity($foundInUserCart->getQuantity() + 1);
             }
@@ -78,17 +96,16 @@ class CartService implements CartServiceInterface
 
     /**
      * @param int $cartItemId
-     * @param int $userId
      * @throws \Doctrine\ORM\OptimisticLockException
      * @return boolean
      */
-    public function increaseQty(int $cartItemId, int $userId)
+    public function increaseQty(int $cartItemId)
     {
         /** @var CartItem $cartItem */
         $cartItem = $this->cartItemRepository->find($cartItemId);
 
         if ($cartItem) {
-            if ($cartItem->checkOwnership($userId)) {
+            if ($cartItem->isOwner($this->currentUser)) {
                 $cartItem->setQuantity($cartItem->getQuantity() + 1);
 
                 $this->cartItemRepository->editCartItem($cartItem);
@@ -101,17 +118,16 @@ class CartService implements CartServiceInterface
 
     /**
      * @param int $cartItemId
-     * @param int $userId
      * @throws \Doctrine\ORM\OptimisticLockException
      * @return boolean
      */
-    public function decreaseQty(int $cartItemId, int $userId)
+    public function decreaseQty(int $cartItemId)
     {
         /** @var CartItem $cartItem */
         $cartItem = $this->cartItemRepository->find($cartItemId);
 
         if ($cartItem) {
-            if ($cartItem->checkOwnership($userId)) {
+            if ($cartItem->isOwner($this->currentUser)) {
                 if (1 < $cartItem->getQuantity()) {
                     $cartItem->setQuantity($cartItem->getQuantity() - 1);
 
@@ -126,18 +142,18 @@ class CartService implements CartServiceInterface
 
     /**
      * @param int $cartItemId
-     * @param int $userId
      * @throws \Doctrine\ORM\OptimisticLockException
      * @return boolean
      */
-    public function removeFromCart(int $cartItemId, int $userId)
+    public function removeFromCart(int $cartItemId)
     {
         /** @var CartItem $cartItem */
         $cartItem = $this->cartItemRepository->find($cartItemId);
 
         if ($cartItem) {
-            if ($cartItem->checkOwnership($userId)) {
+            if ($cartItem->isOwner($this->currentUser)) {
                 $cartItem->setRemovedByUser(true);
+                $cartItem->setDateAdded(null);
                 $this->cartItemRepository->editCartItem($cartItem);
                 return true;
             }

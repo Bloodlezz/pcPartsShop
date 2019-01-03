@@ -33,6 +33,13 @@ class CartItem
     private $quantity;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateAdded", type="datetime", nullable=true)
+     */
+    private $dateAdded;
+
+    /**
      * @var bool
      *
      * @ORM\Column(name="removedByUser", type="boolean")
@@ -68,6 +75,7 @@ class CartItem
     public function __construct(User $user, Product $product)
     {
         $this->quantity = 1;
+        $this->dateAdded = new \DateTime('now');
         $this->removedByUser = false;
         $this->isOrdered = false;
         $this->user = $user;
@@ -107,6 +115,22 @@ class CartItem
     public function getQuantity()
     {
         return $this->quantity;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateAdded(): \DateTime
+    {
+        return $this->dateAdded;
+    }
+
+    /**
+     * @param \DateTime $dateAdded
+     */
+    public function setDateAdded(\DateTime $dateAdded = null): void
+    {
+        $this->dateAdded = $dateAdded;
     }
 
     /**
@@ -198,12 +222,12 @@ class CartItem
     }
 
     /**
-     * @param int $currentUserId
+     * @param User $currentUser
      * @return bool
      */
-    public function checkOwnership(int $currentUserId)
+    public function isOwner(User $currentUser)
     {
-        if ($currentUserId === $this->getUser()->getId()) {
+        if ($currentUser === $this->getUser()) {
             if ($this->getRemovedByUser() === false && $this->getIsOrdered() === false) {
                 return true;
             }

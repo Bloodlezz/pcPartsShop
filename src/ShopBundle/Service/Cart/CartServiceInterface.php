@@ -14,10 +14,9 @@ use ShopBundle\Entity\CartItem;
 interface CartServiceInterface
 {
     /**
-     * @param int $userId
      * @return CartItem[]|object|null
      */
-    public function getUserCart(int $userId);
+    public function getUserCart();
 
     /**
      * @param CartItem $cartItemToAdd
@@ -27,22 +26,19 @@ interface CartServiceInterface
 
     /**
      * @param int $cartItemId
-     * @param int $userId
      * @return boolean
      */
-    public function increaseQty(int $cartItemId, int $userId);
+    public function increaseQty(int $cartItemId);
 
     /**
      * @param int $cartItemId
-     * @param int $userId
      * @return boolean
      */
-    public function decreaseQty(int $cartItemId, int $userId);
+    public function decreaseQty(int $cartItemId);
 
     /**
      * @param int $cartItemId
-     * @param int $userId
      * @return boolean
      */
-    public function removeFromCart(int $cartItemId, int $userId);
+    public function removeFromCart(int $cartItemId);
 }

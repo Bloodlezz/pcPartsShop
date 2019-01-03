@@ -18,7 +18,7 @@
         {% for order in orders %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td>{{ order.created|date("d-m-Y") }}</td>
+                <td>{{ order.created|date("d-m-Y H:i", "Europe/Sofia") }}</td>
                 <td>{{ order.total }}</td>
                 <td>{{ order.status }}</td>
                 <td><a href="{{ path('orderView', {'orderId': order.id}) }}">view</a></td>
