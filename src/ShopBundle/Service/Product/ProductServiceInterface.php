@@ -41,5 +41,5 @@ interface ProductServiceInterface
      * @param Product $product
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function deactivateProduct(Product $product);
+    public function outOfStock(Product $product);
 }

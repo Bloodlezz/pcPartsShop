@@ -83,10 +83,10 @@ class OrderController extends Controller
         if ($currentOrder) {
             /** @var OrderItem[] $orderItems */
             $orderItems = $currentOrder->getOrderItems();
-            return $this->render('order/view.html.twig', ['orderItems' => $orderItems]);
+            return $this->render('order/view.html.twig', ['orderItems' => $orderItems, 'order' => $currentOrder]);
         }
 
-        $this->addFlash('message', 'Order does not exists!');
+        $this->addFlash('notice', 'Order does not exists!');
         return $this->redirectToRoute('myOrders');
     }
 }

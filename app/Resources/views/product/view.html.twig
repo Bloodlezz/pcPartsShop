@@ -4,28 +4,55 @@
 
 {% block main %}
 
-    {% for msg in app.session.flashbag.get('message') %}
-        <div class="alert alert-success" id="msg">
-            {{ msg }}
+    <div class="container">
+
+        {% for message in app.session.flashbag.get('message') %}
+            <div class="alert alert-success" id="message">
+                <i class="fa fa-thumbs-up"></i> {{ message }}
+            </div>
+        {% endfor %}
+
+        <h2>{{ product.title }}</h2>
+
+        <div class="columns-set p-img-wrapper mb-3">
+            <div class="p-image">
+                <img src="{{ asset('images/uploads/products/' ~ product.image) }}" alt="Product picture">
+            </div>
+            {% if product.topProduct %}
+                <div class="tp-badge-p">
+                    <img src="{{ asset('images/top-product-badge.png') }}" alt="Badge picture">
+                </div>
+            {% endif %}
         </div>
-    {% endfor %}
 
-    <p><a href="{{ path('homepage') }}">BACK TO HOMEPAGE</a></p>
+        <div class="columns-set price-addToCart-wrapper mb-3">
+            <div class="show-row">
+                <div class="col-change-price"
+                ><span class="extra-large-fonts">{{ product.price|number_format(2, ".", "") }}</span> LV.
+                </div>
+                <div class="col-change-cart">
+                    <div class="row btn btn-primary from-max-width btn-no-hover">
+                        <a href="{{ path('addToCart', {'productId': product.id}) }}" class="btn btn-primary">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <p><a href="{{ path('productEdit', {'id': product.id}) }}">edit product</a></p>
+        <div class="row">
+            <h6 class="font-weight-bold">Description</h6>
+        </div>
 
-    <p><a href="{{ path('productDeactivate', {'id': product.id}) }}">deactivate product</a></p>
+        <div class="row">{{ product.description }}</div>
 
-    <p>Title: {{ product.title }}</p>
-    <p>Description: {{ product.description }}</p>
-    <p>Price: {{ product.price }}</p>
-    <img src="{{ asset('images/uploads/products/' ~ product.image) }}" width="200" height="100" alt="">
-    <p>Top product: {{ product.topProduct }}</p>
-    <p>Ordered: {{ product.orderedCount }}</p>
-    <p>Category: {{ product.category.name }}</p>
-    <p>Active: {{ product.active }}</p>
-    <p>Uploaded by: {{ product.uploader.firstName }}</p>
+        {% if app.getUser() and app.getUser.isAdmin() %}
+            <span class="element-divider mt-3 mb-2"></span>
+            <div class="col-12 text-right">
+                <a href="{{ path('productEdit', {'id': product.id}) }}">
+                    <button type="button" class="btn btn-dark btn-sm btn-shadow">Edit product</button>
+                </a>
+            </div>
+        {% endif %}
 
-    <p><a href="{{ path('addToCart', {'productId': product.id}) }}">ADD TO CART</a></p>
+    </div>
 
 {% endblock %}

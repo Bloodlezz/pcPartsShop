@@ -4,39 +4,109 @@
 
 {% block main %}
 
-    {% for msg in app.session.flashbag.get('message') %}
-        <div class="alert alert-success" id="msg">
-            {{ msg }}
+    <div class="container">
+
+    <h2>Cart</h2>
+
+    {% for message in app.session.flashbag.get('message') %}
+        <div class="alert alert-success" id="message">
+            <i class="fa fa-thumbs-up"></i> {{ message }}
         </div>
     {% endfor %}
 
-    <p><a href="{{ path('homepage') }}">BACK TO HOMEPAGE</a></p>
+    {% for notice in app.session.flashbag.get('notice') %}
+        <div class="alert alert-danger" id="message">
+            <i class="fa fa-exclamation-triangle"></i> {{ notice }}
+        </div>
+    {% endfor %}
 
-    {% set cartTotal = 0 %}
-    <table>
-        {% for cartItem in cartItems %}
+    <table class="table">
+        {% if cartItems|length == 0 %}
+            <thead>
             <tr>
-                <td><a href="{{ path('removeFromCart', {'cartItemId': cartItem.id}) }}">X</a></td>
-                <td>{{ cartItem.product.title }}</td>
-                <td>{{ cartItem.product.price }}</td>
-                {% if cartItem.quantity == 1 %}
-                    <td>-</td>
-                {% else %}
-                    <td><a href="{{ path('decreaseQty', {'cartItemId': cartItem.id}) }}">-</a></td>
-                {% endif %}
-                <td>{{ cartItem.quantity }}</td>
-                <td><a href="{{ path('increaseQty', {'cartItemId': cartItem.id}) }}">+</a></td>
-                <td>{{ cartItem.calcProductAmount|number_format(2, ".", "") }}</td>
-                {% set cartTotal = cartTotal + cartItem.calcProductAmount %}
+                <th scope="col" colspan="12" class="text-center">You cart is empty</th>
             </tr>
-        {% endfor %}
+            </thead>
+        {% else %}
+            <thead>
+            <tr>
+                <th scope="col" colspan="3">Products</th>
+                <th scope="col" class="text-center">Pieces</th>
+                <th scope="col" class="text-right">Price</th>
+                <th scope="col" class="text-right">Total</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% set cartTotal = 0 %}
+            {% for cartItem in cartItems %}
+                <tr>
+                    <td class="cart-img-wrapper cart-img-cell">
+                        <a href="{{ path('productView', {'id': cartItem.product.id }) }}" target="_blank">
+                            <img src="{{ asset('images/uploads/products/' ~ cartItem.product.image) }}"
+                                 alt="Product picture">
+                        </a>
+                    </td>
+
+                    <td>
+                        <a href="{{ path('productView', {'id': cartItem.product.id }) }}"
+                           target="_blank">{{ cartItem.product.title }}</a>
+                    </td>
+
+                    <td>
+                        <a href="{{ path('removeFromCart', {'cartItemId': cartItem.id }) }}" class="custom-hover"
+                           title="remove from cart">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </a>
+                    </td>
+
+                    <td class="text-center">
+                        {% if cartItem.quantity == 1 %}
+                            <i class="fa fa-minus" aria-hidden="true"></i>
+                        {% else %}
+                            <a href="{{ path('decreaseQty', {'cartItemId': cartItem.id }) }}" class="custom-hover"
+                               title="decrease quantity">
+                                <i class="fa fa-minus" aria-hidden="true"></i>
+                            </a>
+                        {% endif %}
+
+                        <span class="cart-qty text-center">{{ cartItem.quantity }}</span>
+
+                        <a href="{{ path('increaseQty', {'cartItemId': cartItem.id }) }}" class="custom-hover"
+                           title="increase quantity">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </a>
+
+                    </td>
+
+                    <td class="text-right">{{ cartItem.product.price|number_format(2, ".", "") }}<span> lv.</span></td>
+
+                    <td class="text-right font-weight-bold">{{ cartItem.calcProductAmount|number_format(2, ".", "") }}
+                        <span
+                                class="font-weight-normal"> lv.</span></td>
+
+                    {% set cartTotal = cartTotal + cartItem.calcProductAmount %}
+                </tr>
+            {% endfor %}
+            </tbody>
+
+            <tr>
+                <td colspan="5" class="text-right big-fonts font-weight-bold">Total amount:</td>
+                <td class="text-right big-fonts font-weight-bold">{{ cartTotal|number_format(2, ".", "") }}<span
+                            class="font-weight-normal"> lv.</span>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="6" class="text-right">
+                    <form method="POST" action="{{ path('orderCreate') }}">
+                        <input type="number" name="total" hidden value="{{ cartTotal|number_format(2, ".", "") }}">
+                        <button type="submit" class="btn btn-primary">Place order</button>
+                    </form>
+                </td>
+            </tr>
+
+        {% endif %}
     </table>
-
-    <p>Total: {{ cartTotal|number_format(2, ".", "") }}</p>
-
-    <form method="post" action="{{ path('orderCreate') }}">
-        <input type="number" name="total" hidden value="{{ cartTotal|number_format(2, ".", "") }}">
-        <button type="submit">ORDER</button>
-    </form>
 
 {% endblock %}

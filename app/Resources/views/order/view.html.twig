@@ -4,22 +4,59 @@
 
 {% block main %}
 
-    {% for msg in app.session.flashbag.get('message') %}
-        <div class="alert alert-success" id="msg">
-            {{ msg }}
+    <div class="container">
+
+        <h2>My orders</h2>
+
+        <h6 class="mt-1 text-center">Order № {{ app.request.get('orderNumber') }}</h6>
+
+        <div class="table-responsive">
+            <table class="table">
+
+                <thead>
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col">Qty</th>
+                    <th scope="col" class="text-right">Price</th>
+                    <th scope="col" class="text-right">Total</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for orderItem in orderItems %}
+                <tr>
+                    <td><a href="{{ path('productView', {'id': orderItem.product.id}) }}" class="underline"
+                           target="_blank">{{ orderItem.product.title }}</a>
+                    </td>
+
+                    <td>{{ orderItem.quantity }}</td>
+
+                    <td class="text-right">{{ (orderItem.amount / orderItem.quantity)|number_format(2, ".", "") }}<span
+                                class="font-weight-normal"> lv.</span>
+                    </td>
+
+                    <td class="text-right font-weight-bold">{{ orderItem.amount|number_format(2, ".", "") }}<span
+                                class="font-weight-normal"> lv.</span>
+                    </td>
+                </tr>
+                </tbody>
+                {% endfor %}
+
+                <tr>
+                    <td colspan="3" class="text-right big-fonts font-weight-bold">Total amount:</td>
+                    <td class="text-right big-fonts font-weight-bold">{{ order.total|number_format(2, ".", "") }}<span
+                                class="font-weight-normal"> lv.</span>
+                    </td>
+                </tr>
+
+            </table>
+
         </div>
-    {% endfor %}
 
-    <p><a href="{{ path('homepage') }}">BACK TO HOMEPAGE</a></p>
+        <div class="col-12 text-center mt-3">
+            <input type="button" class="btn btn-primary btn-sm" value="Close" onclick="self.close()">
+        </div>
 
-    <table>
-        {% for orderItem in orderItems %}
-            <tr>
-                <td>{{ orderItem.product.title }}</td>
-                <td>{{ orderItem.quantity }}</td>
-                <td>{{ orderItem.amount }}</td>
-            </tr>
-        {% endfor %}
-    </table>
+    </div>
 
 {% endblock %}

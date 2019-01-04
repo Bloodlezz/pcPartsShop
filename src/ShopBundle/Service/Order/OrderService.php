@@ -88,6 +88,8 @@ class OrderService implements OrderServiceInterface
                 $currentOrderItem->setQuantity($cartItem->getQuantity());
                 $currentOrderItem->setAmount($currentAmount);
                 $cartItem->setIsOrdered(true);
+                $productOrderedCount = $cartItem->getProduct()->getOrderedCount();
+                $cartItem->getProduct()->setOrderedCount($productOrderedCount + $cartItem->getQuantity());
                 $order->addOrderItem($currentOrderItem);
             }
 

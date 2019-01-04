@@ -106,7 +106,7 @@ class ProductService implements ProductServiceInterface
      * @throws \Doctrine\ORM\OptimisticLockException
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function deactivateProduct(Product $product)
+    public function outOfStock(Product $product)
     {
 //        $currentImgFullPath = $uploadDir . $product->getImage();
 //

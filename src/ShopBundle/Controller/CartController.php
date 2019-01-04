@@ -55,16 +55,17 @@ class CartController extends Controller
             $cartItemToAdd = new CartItem($this->getUser(), $currentProduct);
             $this->cartService->addToCart($cartItemToAdd);
 
-            $this->addFlash('message', 'Product added to cart successfully.');
+            $this->addFlash('message', 'Product added to cart.');
             return $this->redirectToRoute('productView', ['id' => $productId]);
         }
 
-        $this->addFlash('message', 'Product does not exists!');
+        $this->addFlash('notice', 'Product does not exists!');
         return $this->redirectToRoute('homepage');
     }
 
     /**
      * @Route("/", name="cart")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function cartAction()
@@ -107,9 +108,9 @@ class CartController extends Controller
     public function removeFromCartAction(int $cartItemId)
     {
         if ($this->cartService->removeFromCart($cartItemId)) {
-            $this->addFlash('message', 'Product removed successfully!');
+            $this->addFlash('message', 'Product removed successfully.');
         } else {
-            $this->addFlash('message', 'Product can\'t be removed! Please try again.');
+            $this->addFlash('notice', 'Product can\'t be removed! Please try again.');
         }
 
         return $this->redirectToRoute('cart');

@@ -4,43 +4,113 @@
 
 {% block main %}
 
-    <form action="{{ path('profileEdit') }}" method="post">
-        <div>
-            <label for="firstName">First Name: </label>
-            <input type="text" name="user[firstName]" id="firstName" value="{{ user.firstName }}">
-            {{ form_errors(form.firstName) }}
-        </div>
-        <div>
-            <label for="lastName">Last Name: </label>
-            <input type="text" name="user[lastName]" id="lastName" value="{{ user.lastName }}">
-            {{ form_errors(form.lastName) }}
-        </div>
-        <div>
-            <label for="email">Email: </label>
-            <input type="email" name="user[email]" id="email" value="{{ user.email }}">
-            {{ form_errors(form.email) }}
-        </div>
-        <div>
-            <label for="phone">Phone Number: </label>
-            <input type="text" name="user[phone]" id="phone" value="{{ user.phone }}">
-            {{ form_errors(form.phone) }}
-        </div>
-        <div>
-            <label for="password">Password: </label>
-            <input type="password" name="user[password][first]" id="password">
-            {{ form_errors(form.password.first) }}
-        </div>
-        <div>
-            <label for="confirmPassword">Confirm Password: </label>
-            <input type="password" name="user[password][second]" id="confirmPassword">
-            {#{{ form_errors(form.password.second) }}#}
-        </div>
-        <div>
-            <button type="submit">Save</button>
-        </div>
+    <div class="container mt-3">
 
-        {{  form_row(form._token) }}
-    </form>
+        <h2>Profile edit</h2>
+
+        <span class="element-divider mt-3 mb-2"></span>
+
+        {% for message in app.session.flashbag.get('message') %}
+            <div class="alert alert-success" id="message">
+                <i class="fa fa-thumbs-up"></i> {{ message }}
+            </div>
+        {% endfor %}
+
+        {% set firstName, lastName, email, phone =
+            app.session.get('currentUser')['firstName'],
+            app.session.get('currentUser')['lastName'],
+            app.session.get('currentUser')['email'],
+            app.session.get('currentUser')['phone']
+        %}
+
+        <form method="POST" action="{{ path('profileEdit') }}">
+            <div class="form-group">
+                <label for="firstName">First name</label>
+                <input type="text"
+                       name="user[firstName]"
+                       class="form-control {{ form_errors(form.firstName) ? 'is-invalid' : user.firstName != firstName ? 'is-valid' : '' }}"
+                       id="firstName"
+                       value="{{ user.firstName }}"
+                       placeholder="letters only"
+                >
+                {% if form_errors(form.firstName) %}
+                    <div class="invalid-feedback">{{ form_errors(form.firstName) }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last name</label>
+                <input type="text"
+                       name="user[lastName]"
+                       class="form-control {{ form_errors(form.lastName) ? 'is-invalid' : user.lastName != lastName ? 'is-valid' : '' }}"
+                       id="lastName"
+                       value="{{ user.lastName }}"
+                       placeholder="letters only"
+                >
+                {% if form_errors(form.lastName) %}
+                    <div class="invalid-feedback">{{ form_errors(form.lastName) }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email"
+                       name="user[email]"
+                       class="form-control {{ form_errors(form.email) ? 'is-invalid' : user.email != email ? 'is-valid' : '' }}"
+                       id="email"
+                       value="{{ user.email }}"
+                       placeholder="please enter valid email"
+                >
+                {% if form_errors(form.email) %}
+                    <div class="invalid-feedback">{{ form_errors(form.email) }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone number</label>
+                <input type="text"
+                       name="user[phone]"
+                       class="form-control {{ form_errors(form.phone) ? 'is-invalid' : user.phone != phone ? 'is-valid' : '' }}"
+                       id="phone"
+                       value="{{ user.phone }}"
+                       placeholder="numbers and + allowed"
+                >
+                {% if form_errors(form.phone) %}
+                    <div class="invalid-feedback">{{ form_errors(form.phone) }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password"
+                       name="user[password][first]"
+                       class="form-control {{ form_errors(form.password.first) ? 'is-invalid' : '' }}"
+                       id="password"
+                       placeholder="password">
+                {% if form_errors(form.password.first) %}
+                    <div class="invalid-feedback">{{ form_errors(form.password.first) }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm password</label>
+                <input type="password"
+                       name="user[password][second]"
+                       class="form-control {{ form_errors(form.password.first) ? 'is-invalid' : '' }}"
+                       id="confirmPassword"
+                       placeholder="confirm password"
+                >
+                {% if form_errors(form.password.first) %}
+                    <div class="invalid-feedback">{{ form_errors(form.password.first) }}</div>
+                {% endif %}
+            </div>
+
+            <span class="element-divider mt-3 mb-2"></span>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{{ path('homepage') }}">
+                <button type="button" class="btn btn-primary">Cancel</button>
+            </a>
+
+            {{ form_row(form._token) }}
+        </form>
+
+    </div>
 
 {% endblock %}
 

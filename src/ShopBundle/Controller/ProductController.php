@@ -66,7 +66,8 @@ class ProductController extends Controller
                 $uploadDir = $this->getParameter('products_images');
                 $this->productService->createProduct($product, $uploadDir, $imageFile);
 
-                return $this->redirectToRoute("homepage");
+                $this->addFlash('message', 'Product added successfully.');
+                return $this->redirectToRoute("productView", ['id' => $product->getId()]);
             }
 
             return $this->render('product/create.html.twig',
@@ -156,12 +157,12 @@ class ProductController extends Controller
     }
 
     /**
-     * @Route("/deactivate/{id}", name="productDeactivate")
+     * @Route("/outOfStock/{id}", name="outOfStock")
      * @Security("is_granted('ROLE_ADMIN')")
      * @param int $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function deactivateAction(int $id)
+    public function outOfStockAction(int $id)
     {
         /** @var Product $product */
         $product = $this->productService->getProductById($id);
@@ -169,10 +170,10 @@ class ProductController extends Controller
         if ($product) {
             // $uploadDir = $this->getParameter('products_images');
             // $this->productService->deleteProduct($product, $uploadDir);
-            $product->setIsActive(false);
-            $this->productService->deactivateProduct($product);
+            $product->setIsOutOfStock(true);
+            $this->productService->outOfStock($product);
 
-            $this->addFlash('message', 'Product deactivated successfully.');
+            $this->addFlash('message', 'Product is out of stock.');
             return $this->redirectToRoute('homepage');
         }
 

@@ -96,11 +96,11 @@ class Product
     private $added;
 
     /**
-     * @var boolean
+     * @var bool
      *
-     * @ORM\Column(name="isActive", type="boolean")
+     * @ORM\Column(name="isOutOfStock", type="boolean")
      */
-    private $isActive;
+    private $isOutOfStock;
 
     /**
      * @var Category
@@ -141,7 +141,7 @@ class Product
     {
         $this->orderedCount = 0;
         $this->added = new \DateTime('now');
-        $this->isActive = true;
+        $this->isOutOfStock = false;
         $this->cartItems = new ArrayCollection();
         $this->orderItems = new ArrayCollection();
     }
@@ -328,17 +328,17 @@ class Product
     /**
      * @return bool
      */
-    public function isActive(): bool
+    public function isOutOfStock(): bool
     {
-        return $this->isActive;
+        return $this->isOutOfStock;
     }
 
     /**
-     * @param bool $isActive
+     * @param bool $isOutOfStock
      */
-    public function setIsActive(bool $isActive): void
+    public function setIsOutOfStock(bool $isOutOfStock): void
     {
-        $this->isActive = $isActive;
+        $this->isOutOfStock = $isOutOfStock;
     }
 
     /**

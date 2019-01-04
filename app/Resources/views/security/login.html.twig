@@ -16,7 +16,7 @@
                        class="form-control"
                        id="email"
                        value="{{ last_username }}"
-                       placeholder="please enter valid email"
+                       placeholder="enter email"
                 >
             </div>
             <div class="form-group">
@@ -25,15 +25,14 @@
                        name="_password"
                        class="form-control"
                        id="password"
-                       placeholder="password">
+                       placeholder="enter password">
             </div>
 
             {% if error %}
                 <div class="form-group row">
                     <div class="col-12">
                         <ul class="list-unstyled alert alert-danger">
-                            <li><i class="fa fa-exclamation-triangle"
-                                   aria-hidden="true"></i> {{ error.message | replace({"Bad credentials." : "Invalid email or password."}) }}
+                            <li><i class="fa fa-exclamation-triangle"></i> {{ error.message | replace({"Bad credentials." : "Invalid email or password."}) }}
                             </li>
                         </ul>
                     </div>

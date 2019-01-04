@@ -4,26 +4,68 @@
 
 {% block main %}
 
-    <h1>My orders</h1>
+    <div class="container">
 
-    {% for msg in app.session.flashbag.get('message') %}
-        <div class="alert alert-success" id="msg">
-            {{ msg }}
-        </div>
-    {% endfor %}
+        <h2>My orders</h2>
 
-    <p><a href="{{ path('homepage') }}">BACK TO HOMEPAGE</a></p>
-
-    <table>
-        {% for order in orders %}
-            <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ order.created|date("d-m-Y H:i", "Europe/Sofia") }}</td>
-                <td>{{ order.total }}</td>
-                <td>{{ order.status }}</td>
-                <td><a href="{{ path('orderView', {'orderId': order.id}) }}">view</a></td>
-            </tr>
+        {% for message in app.session.flashbag.get('message') %}
+            <div class="alert alert-success" id="message">
+                <i class="fa fa-thumbs-up"></i> {{ message }}
+            </div>
         {% endfor %}
-    </table>
+
+        {% for notice in app.session.flashbag.get('notice') %}
+            <div class="alert alert-danger" id="message">
+                <i class="fa fa-exclamation-triangle"></i> {{ notice }}
+            </div>
+        {% endfor %}
+
+        <div class="table-responsive">
+            <table class="table">
+
+                {% if orders|length == 0 %}
+                    <thead>
+                    <tr>
+                        <th scope="col" colspan="12" class="text-center">You have not made any orders yet!</th>
+                    </tr>
+                    </thead>
+
+                {% else %}
+
+                    <thead>
+                    <tr>
+                        <th scope="col" class="text-center">№</th>
+                        <th scope="col" class="text-center">Created</th>
+                        <th scope="col" class="pr-5 text-right">Total</th>
+                        <th scope="col" class="text-center">Ordered</th>
+                        <th scope="col" class="text-center">Status</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% set orderCounter = orders|length %}
+                    {% for order in orders %}
+                        <tr>
+                            <th scope="row" class="text-center">{{ orderCounter }}</th>
+                            <td class="text-center">{{ order.created|date("d-m-Y H:i", "Europe/Sofia") }}</td>
+                            <td class="pr-5 text-right">{{ order.total|number_format(2, ".", "") }}<span> lv.</span>
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ path('orderView', {'orderId': order.id, 'orderNumber': orderCounter}) }}" target="_blank">
+                                    <button class="btn btn-primary btn-sm btn-reversed">view</button>
+                                </a>
+                            </td>
+                            <td class="text-center {{ order.status == 'processing' ? 'processing-animation' : '' }}">{{ order.status|capitalize }}</td>
+                        </tr>
+                        {% set orderCounter = orderCounter - 1 %}
+                    {% endfor %}
+
+                    </tbody>
+
+                {% endif %}
+
+            </table>
+        </div>
+    </div>
 
 {% endblock %}

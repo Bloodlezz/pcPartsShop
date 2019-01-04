@@ -57,19 +57,6 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/profile", name="profile")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function profileAction()
-    {
-        /** @var User $currentUser */
-        $currentUser = $this->getUser();
-
-        return $this->render('user/profile.html.twig', ['user' => $currentUser]);
-    }
-
-    /**
      * @Route("/profile/edit", name="profileEdit")
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @param Request $request
@@ -77,6 +64,15 @@ class UserController extends Controller
      */
     public function editAction(Request $request)
     {
+        $session = $this->get('session');
+        $session->set('currentUser',
+            [
+                'firstName' => $this->getUser()->getFirstName(),
+                'lastName' => $this->getUser()->getLastName(),
+                'email' => $this->getUser()->getEmail(),
+                'phone' => $this->getUser()->getPhone()
+            ]
+        );
         /** @var User $user */
         $user = $this->getUser();
         $currentHashedPass = $user->getPassword();
@@ -91,7 +87,8 @@ class UserController extends Controller
             if ($form->isValid()) {
                 $this->userService->edit($user, $currentHashedPass);
 
-                return $this->redirectToRoute("homepage");
+                $this->addFlash('message', 'Profile changed successfully.');
+                return $this->redirectToRoute("profileEdit");
             }
 
             return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);

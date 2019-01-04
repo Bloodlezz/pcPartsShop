@@ -140,7 +140,7 @@ class User implements UserInterface
     /**
      * @var ArrayCollection|Order[]
      *
-     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Order", mappedBy="user", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Order", mappedBy="user")
      */
     private $orders;
 
@@ -438,5 +438,13 @@ class User implements UserInterface
         $this->orders[] = $order;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return in_array("ROLE_ADMIN", $this->getRoles());
     }
 }
