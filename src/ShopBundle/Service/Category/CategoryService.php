@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use ShopBundle\Entity\Category;
 use ShopBundle\Entity\Product;
 use ShopBundle\Repository\CategoryRepository;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class CategoryService implements CategoryServiceInterface
 {
@@ -22,12 +23,19 @@ class CategoryService implements CategoryServiceInterface
     private $categoryRepository;
 
     /**
+     * @var SessionInterface
+     */
+    private $session;
+
+    /**
      * CategoryService constructor.
      * @param CategoryRepository $categoryRepository
+     * @param SessionInterface $session
      */
-    public function __construct(CategoryRepository $categoryRepository)
+    public function __construct(CategoryRepository $categoryRepository, SessionInterface $session)
     {
         $this->categoryRepository = $categoryRepository;
+        $this->session = $session;
     }
 
     /**
@@ -41,7 +49,12 @@ class CategoryService implements CategoryServiceInterface
     /**
      * @return array
      */
-    public function getCategoriesName() {
+    public function getCategoriesName()
+    {
+        if ($this->session->has('categories')) {
+            return $this->session->get('categories');
+        }
+
         $result = [];
 
         /** @var Category $category */
@@ -50,6 +63,7 @@ class CategoryService implements CategoryServiceInterface
         }
 
         sort($result);
+        $this->session->set('categories', $result);
 
         return $result;
     }

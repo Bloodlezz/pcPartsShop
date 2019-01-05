@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use ShopBundle\Entity\CartItem;
 use ShopBundle\Entity\User;
 use ShopBundle\Repository\CartItemRepository;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class CartService implements CartServiceInterface
@@ -28,20 +29,32 @@ class CartService implements CartServiceInterface
     private $security;
 
     /**
-     * @var User
+     * @var SessionInterface
      */
-    private $currentUser;
+    private $session;
 
     /**
      * CartService constructor.
      * @param CartItemRepository $cartItemRepository
      * @param TokenStorageInterface $security
+     * @param SessionInterface $session
      */
-    public function __construct(CartItemRepository $cartItemRepository, TokenStorageInterface $security)
+    public function __construct(CartItemRepository $cartItemRepository,
+                                TokenStorageInterface $security,
+                                SessionInterface $session)
     {
         $this->cartItemRepository = $cartItemRepository;
         $this->security = $security;
-        $this->currentUser = $security->getToken()->getUser();
+        $this->session = $session;
+    }
+
+
+    /**
+     * @return User|object|null
+     */
+    public function getCurrentUser()
+    {
+        return $this->security->getToken()->getUser();
     }
 
     /**
@@ -51,7 +64,7 @@ class CartService implements CartServiceInterface
     {
         return $this->cartItemRepository->findBy(
             [
-                'user' => $this->currentUser->getId(),
+                'user' => $this->getCurrentUser()->getId(),
                 'removedByUser' => false,
                 'isOrdered' => false
             ],
@@ -73,11 +86,13 @@ class CartService implements CartServiceInterface
         /** @var CartItem $foundInUserCart */
         $foundInUserCart = $this->cartItemRepository->findOneBy(
             [
-                'user' => $this->currentUser->getId(),
+                'user' => $this->getCurrentUser()->getId(),
                 'product' => $currentProduct->getId(),
                 'isOrdered' => false
             ]
         );
+
+        $this->session->set('cartCount', $this->session->get('cartCount') + 1);
 
         if ($foundInUserCart) {
             if ($foundInUserCart->getRemovedByUser()) {
@@ -105,8 +120,9 @@ class CartService implements CartServiceInterface
         $cartItem = $this->cartItemRepository->find($cartItemId);
 
         if ($cartItem) {
-            if ($cartItem->isOwner($this->currentUser)) {
+            if ($cartItem->isOwner($this->getCurrentUser())) {
                 $cartItem->setQuantity($cartItem->getQuantity() + 1);
+                $this->session->set('cartCount', $this->session->get('cartCount') + 1);
 
                 $this->cartItemRepository->editCartItem($cartItem);
                 return true;
@@ -127,9 +143,10 @@ class CartService implements CartServiceInterface
         $cartItem = $this->cartItemRepository->find($cartItemId);
 
         if ($cartItem) {
-            if ($cartItem->isOwner($this->currentUser)) {
+            if ($cartItem->isOwner($this->getCurrentUser())) {
                 if (1 < $cartItem->getQuantity()) {
                     $cartItem->setQuantity($cartItem->getQuantity() - 1);
+                    $this->session->set('cartCount', $this->session->get('cartCount') - 1);
 
                     $this->cartItemRepository->editCartItem($cartItem);
                     return true;
@@ -151,14 +168,37 @@ class CartService implements CartServiceInterface
         $cartItem = $this->cartItemRepository->find($cartItemId);
 
         if ($cartItem) {
-            if ($cartItem->isOwner($this->currentUser)) {
+            if ($cartItem->isOwner($this->getCurrentUser())) {
                 $cartItem->setRemovedByUser(true);
                 $cartItem->setDateAdded(null);
+                $this->session->set('cartCount', $this->session->get('cartCount') - $cartItem->getQuantity());
                 $this->cartItemRepository->editCartItem($cartItem);
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCartCount()
+    {
+        if ($this->session->has('cartCount')) {
+            return $this->session->get('cartCount');
+        }
+
+        $result = 0;
+        $userCartItems = $this->getUserCart();
+
+        /** @var CartItem $cartItem */
+        foreach ($userCartItems as $cartItem) {
+            $result += $cartItem->getQuantity();
+        }
+
+        $this->session->set('cartCount', $result);
+
+        return $result;
     }
 }

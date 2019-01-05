@@ -26,9 +26,9 @@
                 <select name="product[category]"
                         class="form-control {{ form_errors(form.category) ? 'is-invalid' : product.category != category ? 'is-valid' : '' }}"
                         id="category">
-                    <option value="" {{ product is defined and product.category is not empty ? '' : 'selected' }}>
-                        choose
-                    </option>
+                    {#<option value="" {{ product is defined and product.category is not empty ? '' : 'selected' }}>#}
+                        {#choose#}
+                    {#</option>#}
                     {% for category in categories %}
                         <option value="{{ category.id }}" {{ product is defined and product.category is not empty ? category.id == product.category.id ? 'selected' : '' }}>{{ category.name }}</option>
                     {% endfor %}

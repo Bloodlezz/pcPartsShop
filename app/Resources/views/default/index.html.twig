@@ -6,6 +6,18 @@
 
     <div class="container mt-5">
 
+        {% for message in app.session.flashbag.get('message') %}
+            <div class="alert alert-success" id="message">
+                <i class="fa fa-thumbs-up"></i> {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for notice in app.session.flashbag.get('notice') %}
+            <div class="alert alert-danger" id="message">
+                <i class="fa fa-exclamation-triangle"></i> {{ notice }}
+            </div>
+        {% endfor %}
+
         <div class="row">
 
             {% for product in allTopProducts %}

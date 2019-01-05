@@ -51,10 +51,10 @@
                     {#Categories#}
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle active-color big-fonts" href="#" id="categories"
+                            <a class="nav-link dropdown-toggle active-color big-fonts" href="#" id="products"
                                role="button" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="false">Categories</a>
-                            <div class="dropdown-menu" aria-labelledby="categories">
+                               aria-expanded="false">Products</a>
+                            <div class="dropdown-menu" aria-labelledby="products">
                                 {% for categoryName in categoryService.getCategoriesName %}
                                     <a class="dropdown-item" href="{{ path('categoryView', {'categoryName': categoryName}) }}">{{ categoryName|capitalize|replace({'-' : ' '}) }}</a>
                                 {% endfor %}
@@ -97,8 +97,7 @@
                     {#Cart#}
                     <a class="nav-link no-padding-l big-fonts" href="{{ path('cart') }}" title="Cart">
                         <i class="fa fa-opencart active-color font-weight-bold" aria-hidden="true"></i>
-                        <span class="badge badge-light">
-                    </span>
+                        <span class="badge badge-light">{{ app.user ? cartService.cartCount : '' }}</span>
                     </a>
 
                     {#Search#}

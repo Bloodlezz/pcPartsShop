@@ -17,6 +17,7 @@ use ShopBundle\Entity\User;
 use ShopBundle\Repository\OrderRepository;
 use ShopBundle\Service\User\UserServiceInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class OrderService implements OrderServiceInterface
@@ -47,22 +48,30 @@ class OrderService implements OrderServiceInterface
     private $currentUser;
 
     /**
+     * @var SessionInterface
+     */
+    private $session;
+
+    /**
      * OrderService constructor.
      * @param OrderRepository $orderRepository
      * @param RequestStack $request
      * @param TokenStorageInterface $security
      * @param UserServiceInterface $userService
+     * @param SessionInterface $session
      */
     public function __construct(OrderRepository $orderRepository,
                                 RequestStack $request,
                                 TokenStorageInterface $security,
-                                UserServiceInterface $userService)
+                                UserServiceInterface $userService,
+                                SessionInterface $session)
     {
         $this->orderRepository = $orderRepository;
         $this->request = $request;
         $this->security = $security;
         $this->userService = $userService;
         $this->currentUser = $security->getToken()->getUser();
+        $this->session = $session;
     }
 
 
@@ -74,7 +83,7 @@ class OrderService implements OrderServiceInterface
      */
     public function createOrder(array $cartItems, $formTotal)
     {
-        $orderTotal = $this->getCartTotal($cartItems);
+        $orderTotal = $this->getOrderTotal($cartItems);
 
         if (abs($orderTotal - $formTotal) < 0.000001) {
 
@@ -97,6 +106,7 @@ class OrderService implements OrderServiceInterface
             $this->orderRepository->create($order);
             // SET ALL CART ITEMS IN CART AS ORDERED
             $this->userService->edit($this->currentUser);
+            $this->session->set('cartCount', 0);
             return true;
         }
 
@@ -132,7 +142,7 @@ class OrderService implements OrderServiceInterface
     /**
      * @param ArrayCollection|CartItem[] $cartItems
      */
-    private function getCartTotal(array $cartItems)
+    private function getOrderTotal(array $cartItems)
     {
         $cartTotal = 0;
 

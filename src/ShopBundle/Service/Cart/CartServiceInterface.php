@@ -10,9 +10,15 @@ namespace ShopBundle\Service\Cart;
 
 
 use ShopBundle\Entity\CartItem;
+use ShopBundle\Entity\User;
 
 interface CartServiceInterface
 {
+    /**
+     * @return User|object|null
+     */
+    public function getCurrentUser();
+
     /**
      * @return CartItem[]|object|null
      */
@@ -41,4 +47,9 @@ interface CartServiceInterface
      * @return boolean
      */
     public function removeFromCart(int $cartItemId);
+
+    /**
+     * @return int
+     */
+    public function getCartCount();
 }

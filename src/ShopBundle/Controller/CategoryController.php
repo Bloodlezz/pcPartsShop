@@ -31,9 +31,16 @@ class CategoryController extends Controller
      */
     public function viewAction(string $categoryName)
     {
-        /** @var Product[] $products */
-        $products = $this->categoryService->getCategoryProducts($categoryName);
+        $existsInDb = in_array($categoryName, $this->categoryService->getCategoriesName());
 
-        return $this->render('category/view.html.twig', ['products' => $products]);
+        if ($existsInDb) {
+            /** @var Product[] $products */
+            $products = $this->categoryService->getCategoryProducts($categoryName);
+
+            return $this->render('category/view.html.twig', ['products' => $products]);
+        }
+
+        $this->addFlash('notice', 'Category does not exists!');
+        return $this->redirectToRoute('homepage');
     }
 }
