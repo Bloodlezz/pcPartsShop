@@ -44,3 +44,6 @@ services:
 
     ShopBundle\Service\Cart\CartServiceInterface:
         class: 'ShopBundle\Service\Cart\CartService'
+
+    ShopBundle\Service\Order\OrderServiceInterface:
+        class: 'ShopBundle\Service\Order\OrderService'

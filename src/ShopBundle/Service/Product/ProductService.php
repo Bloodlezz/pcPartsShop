@@ -9,6 +9,7 @@
 namespace ShopBundle\Service\Product;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use ShopBundle\Entity\Product;
 use ShopBundle\Repository\ProductRepository;
 use Symfony\Component\Filesystem\Filesystem;
@@ -119,5 +120,13 @@ class ProductService implements ProductServiceInterface
 //        }
 
         return $this->productRepository->edit($product);
+    }
+
+    /**
+     * @return ArrayCollection|Product[]|null
+     */
+    public function getAllTopProducts()
+    {
+        return $this->productRepository->findBy(['topProduct' => true], ['price' => 'ASC']);
     }
 }

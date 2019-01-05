@@ -73,6 +73,7 @@ class UserController extends Controller
                 'phone' => $this->getUser()->getPhone()
             ]
         );
+        
         /** @var User $user */
         $user = $this->getUser();
         $currentHashedPass = $user->getPassword();
@@ -86,9 +87,10 @@ class UserController extends Controller
         if ($form->isSubmitted()) {
             if ($form->isValid()) {
                 $this->userService->edit($user, $currentHashedPass);
+                $session->remove('currentUser');
 
                 $this->addFlash('message', 'Profile changed successfully.');
-                return $this->redirectToRoute("profileEdit");
+                return $this->redirectToRoute("profileEdit", ['ok' => 1]);
             }
 
             return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);

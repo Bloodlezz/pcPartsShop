@@ -11,6 +11,7 @@ namespace ShopBundle\Service\Category;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use ShopBundle\Entity\Category;
+use ShopBundle\Entity\Product;
 
 interface CategoryServiceInterface
 {
@@ -18,4 +19,15 @@ interface CategoryServiceInterface
      * @return ArrayCollection|Category[]
      */
     public function getAllCategories();
+
+    /**
+     * @return array
+     */
+    public function getCategoriesName();
+
+    /**
+     * @param string $categoryName
+     * @return ArrayCollection|Product[]|null
+     */
+    public function getCategoryProducts(string $categoryName);
 }

@@ -3,30 +3,49 @@
 {% block body_id 'homepage' %}
 
 {% block body %}
-    <h1>Welcome</h1>
 
-    {% for msg in app.session.flashbag.get('message') %}
-        <div class="alert alert-success" id="msg">
-            {{ msg }}
+    <div class="container mt-5">
+
+        <div class="row">
+
+            {% for product in allTopProducts %}
+                <div class="pull-left m-auto">
+                    <div class="tProduct-wrapper">
+
+                        <div class="tp-img-wrapper">
+                            <a href="{{ path('productView', {'id': product.id}) }}">
+                                <img src="{{ asset('images/uploads/products/' ~ product.image) }}"
+                                     alt="Product picture">
+                            </a>
+                            {% if product.topProduct %}
+                                <div class="tp-badge">
+                                    <img src="{{ asset('images/top-product-badge.png') }}" alt="Badge picture">
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="tp-name-price-wrapper">
+                            <div class="row">
+                                <a href="{{ path('productView', {'id': product.id}) }}">{{ product.title }}</a>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 pl-0"
+                                ><span class="large-fonts">{{ product.price|number_format(2, ".", "") }}</span> LV
+                                </div>
+                                <div class="col-6 center-element">
+                                    <a href="{{ path('productView', {'id': product.id}) }}">
+                                        <button type="button" class="btn btn-primary">see more</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {% endfor %}
+
         </div>
-    {% endfor %}
 
-    <div><a href="{{ path('login') }}">Login</a></div>
-    <div><a href="{{ path('register') }}">Register</a></div>
-    <div><a href="{{ path('logout') }}">Logout</a></div>
-
-    {% if app.user %}
-        <p>You logged in successfully! Edit your profile <a href="{{ path('profileEdit') }}">here</a></p>
-        <p>View your <a href="{{ path('cart') }}">cart</a></p>
-        {% if is_granted('ROLE_ADMIN') %}
-            <p>Ooo, you are admin! You can <a href="{{ path('productCreate') }}">create product.</a></p>
-        {% endif %}
-    {% endif %}
-
-    <div><a href="{{ path('myOrders') }}">My orders</a></div>
-
-    {% for product in prod %}
-        <p>{{ product.title }} -> <a href="{{ path('productView', {'id': product.id}) }}">view</a></p>
-    {% endfor %}
+    </div>
 
 {% endblock %}

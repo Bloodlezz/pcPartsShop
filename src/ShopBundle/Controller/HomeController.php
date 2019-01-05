@@ -3,20 +3,36 @@
 namespace ShopBundle\Controller;
 
 use ShopBundle\Entity\Product;
+use ShopBundle\Service\Product\ProductServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends Controller
 {
     /**
-     * @Route("/", name="homepage")
+     * @var ProductServiceInterface
      */
-    public function indexAction(Request $request)
-    {
-        /** @var Product[] $rr */
-        $rr = $this->getDoctrine()->getRepository(Product::class)->findAll();
+    private $productService;
 
-        return $this->render('default/index.html.twig', ['prod' => $rr]);
+    /**
+     * HomeController constructor.
+     * @param ProductServiceInterface $productService
+     */
+    public function __construct(ProductServiceInterface $productService)
+    {
+        $this->productService = $productService;
+    }
+
+
+    /**
+     * @Route("/", name="homepage")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function indexAction()
+    {
+        /** @var Product[] $allTopProducts */
+        $allTopProducts = $this->productService->getAllTopProducts();
+
+        return $this->render('default/index.html.twig', ['allTopProducts' => $allTopProducts]);
     }
 }

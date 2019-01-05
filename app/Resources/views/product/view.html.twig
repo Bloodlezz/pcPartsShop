@@ -32,7 +32,11 @@
                 </div>
                 <div class="col-change-cart">
                     <div class="row btn btn-primary from-max-width btn-no-hover">
-                        <a href="{{ path('addToCart', {'productId': product.id}) }}" class="btn btn-primary">Add to Cart</a>
+                        {% if product.outOfStock %}
+                            <button class="btn btn-primary">OUT OF STOCK</button>
+                        {% else %}
+                            <a href="{{ path('addToCart', {'productId': product.id}) }}" class="btn btn-primary">Add to Cart</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

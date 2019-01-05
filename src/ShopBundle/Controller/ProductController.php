@@ -114,14 +114,21 @@ class ProductController extends Controller
     {
         /** @var Product $product */
         $product = $this->productService->getProductById($id);
+
+        $session = $this->get('session');
+        $session->set('productToEdit',
+            [
+                'category' => $product->getCategory(),
+                'title' => $product->getTitle(),
+                'description' => $product->getDescription(),
+                'price' => $product->getPrice()
+            ]
+        );
+
         $currentImageName = $product->getImage();
         $categories = $this->categoryService->getAllCategories();
         $form = $this->createForm(ProductType::class, $product, ['validation_groups' => ['Default']]);
         $form->handleRequest($request);
-
-//        if ($request->isMethod('POST')) {
-//            $form->submit($request->request->get($form->getName()), false);
-//        }
 
         if ($form->isSubmitted()) {
             /** @var UploadedFile $imageFile */
@@ -130,7 +137,9 @@ class ProductController extends Controller
             if ($form->isValid()) {
                 $uploadDir = $this->getParameter('products_images');
                 $this->productService->editProduct($product, $uploadDir, $currentImageName, $imageFile);
+                $session->remove('productToEdit');
 
+                $this->addFlash('message', 'Product edited successfully.');
                 return $this->redirectToRoute('productView', ['id' => $id]);
             }
 

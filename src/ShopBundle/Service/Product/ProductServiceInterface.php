@@ -9,6 +9,7 @@
 namespace ShopBundle\Service\Product;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use ShopBundle\Entity\Product;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -42,4 +43,9 @@ interface ProductServiceInterface
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function outOfStock(Product $product);
+
+    /**
+     * @return ArrayCollection|Product[]|null
+     */
+    public function getAllTopProducts();
 }

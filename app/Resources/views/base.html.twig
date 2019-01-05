@@ -48,14 +48,16 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    {#Products#}
+                    {#Categories#}
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle active-color big-fonts" href="#" id="products"
+                            <a class="nav-link dropdown-toggle active-color big-fonts" href="#" id="categories"
                                role="button" data-toggle="dropdown" aria-haspopup="true"
-                               aria-expanded="false">Products</a>
-                            <div class="dropdown-menu" aria-labelledby="products">
-                                <a class="dropdown-item" href="category.php?id=motherboards"><?php echo $mbLang; ?></a>
+                               aria-expanded="false">Categories</a>
+                            <div class="dropdown-menu" aria-labelledby="categories">
+                                {% for categoryName in categoryService.getCategoriesName %}
+                                    <a class="dropdown-item" href="{{ path('categoryView', {'categoryName': categoryName}) }}">{{ categoryName|capitalize|replace({'-' : ' '}) }}</a>
+                                {% endfor %}
                             </div>
                         </li>
                     </ul>

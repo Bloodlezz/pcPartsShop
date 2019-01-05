@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'categoryView' %}
+
+{% block body %}
+
+    <div class="container mt-5">
+
+        {% if products|length == 0 %}
+
+            <h6>No products in this category!</h6>
+
+        {% else %}
+
+            <div class="row">
+
+                {% for product in products %}
+                    <div class="pull-left m-auto">
+                        <div class="tProduct-wrapper">
+
+                            <div class="tp-img-wrapper">
+                                <a href="{{ path('productView', {'id': product.id}) }}">
+                                    <img src="{{ asset('images/uploads/products/' ~ product.image) }}"
+                                         alt="Product picture">
+                                </a>
+                                {% if product.topProduct %}
+                                    <div class="tp-badge">
+                                        <img src="{{ asset('images/top-product-badge.png') }}" alt="Badge picture">
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="tp-name-price-wrapper">
+                                <div class="row">
+                                    <a href="{{ path('productView', {'id': product.id}) }}">{{ product.title }}</a>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6 pl-0"
+                                    ><span class="large-fonts">{{ product.price|number_format(2, ".", "") }}</span> LV
+                                    </div>
+                                    <div class="col-6 center-element">
+                                        <a href="{{ path('productView', {'id': product.id}) }}">
+                                            <button type="button" class="btn btn-primary">see more</button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+{% endblock %}

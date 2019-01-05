@@ -17,13 +17,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(
  *     fields={"email"},
  *     errorPath="email",
- *     message="It appears you have already registered with this email!"
+ *     message="Account with email {{ value }} already exists!"
  * )
  *
  * @UniqueEntity(
  *     fields={"phone"},
  *     errorPath="phone",
- *     message="It appears you have already registered with this phone!"
+ *     message="Account with phone number {{ value }} already exists!"
  * )
  */
 class User implements UserInterface

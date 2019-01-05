@@ -11,6 +11,7 @@ namespace ShopBundle\Service\Category;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use ShopBundle\Entity\Category;
+use ShopBundle\Entity\Product;
 use ShopBundle\Repository\CategoryRepository;
 
 class CategoryService implements CategoryServiceInterface
@@ -35,5 +36,33 @@ class CategoryService implements CategoryServiceInterface
     public function getAllCategories()
     {
         return $this->categoryRepository->findAll();
+    }
+
+    /**
+     * @return array
+     */
+    public function getCategoriesName() {
+        $result = [];
+
+        /** @var Category $category */
+        foreach ($this->getAllCategories() as $category) {
+            $result[] = $category->getName();
+        }
+
+        sort($result);
+
+        return $result;
+    }
+
+    /**
+     * @param string $categoryName
+     * @return ArrayCollection|Product[]|null
+     */
+    public function getCategoryProducts(string $categoryName)
+    {
+        /** @var Category $category */
+        $category = $this->categoryRepository->findOneBy(['name' => $categoryName]);
+
+        return $category->getProducts();
     }
 }

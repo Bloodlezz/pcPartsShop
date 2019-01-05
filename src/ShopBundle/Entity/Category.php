@@ -43,6 +43,7 @@ class Category
      * @var ArrayCollection|Product[]
      *
      * @ORM\OneToMany(targetEntity="ShopBundle\Entity\Product", mappedBy="category")
+     * @ORM\OrderBy({"price" = "ASC"})
      */
     private $products;
 
