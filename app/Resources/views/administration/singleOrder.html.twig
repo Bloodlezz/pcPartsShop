@@ -6,11 +6,17 @@
 
     <div class="container">
 
-        <h2>My orders</h2>
+        <h2>Administration panel</h2>
+
+        {% for message in app.session.flashbag.get('message') %}
+            <div class="alert alert-success" id="message">
+                <i class="fa fa-thumbs-up"></i> {{ message }}
+            </div>
+        {% endfor %}
 
         <h6 class="mt-1 text-center">Order status: <span class="{{ order.status == 'processing' ? 'processing-animation' : order.status == 'sent' ? 'text-success' : '' }}">{{ order.status|upper }}</span></h6>
         <h6 class="mt-1 text-center">Status last updated: {{ order.statusUpdate|date("d-m-Y H:i:s", "Europe/Sofia") }}</h6>
-        <h6 class="mt-1 text-center">Comment: {{ order.comment }}</h6>
+        <h6 class="mt-1 text-center">Order ID {{ order.id }} -> made by {{ order.user.fullName }} -> phone: {{ order.user.phone }}</h6>
 
         <div class="table-responsive">
             <table class="table">
@@ -52,6 +58,22 @@
                 </tr>
 
             </table>
+
+            <form method="POST" action="{{ path('singleOrder', {'orderId': order.id}) }}">
+                <div class="form-group col-12">
+                    <label for="comment">Comments</label>
+                    <textarea
+                            name="comment"
+                            id="comment"
+                            class="form-control"
+                            rows="3"
+                    >{{ order.comment }}</textarea>
+                </div>
+
+                <div class="col-12 text-right">
+                    <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                </div>
+            </form>
 
         </div>
 

@@ -190,9 +190,18 @@ class OrderService implements OrderServiceInterface
         /** @var Order $order */
         $order = $this->orderRepository->find($orderId);
         $order->setStatus($newStatus);
-        $order->setSend(new \DateTime('now'));
+        $order->setStatusUpdate(new \DateTime('now'));
         $this->orderRepository->update($order);
 
         return true;
+    }
+
+    /**
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function updateOrderComment(Order $order)
+    {
+        return $this->orderRepository->update($order);
     }
 }

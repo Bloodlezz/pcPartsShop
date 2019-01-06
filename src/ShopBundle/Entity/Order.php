@@ -46,9 +46,16 @@ class Order
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="send", type="datetime", nullable=true)
+     * @ORM\Column(name="statusUpdate", type="datetime")
      */
-    private $send;
+    private $statusUpdate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="comment", type="text", nullable=true)
+     */
+    private $comment;
 
     /**
      * @var User
@@ -74,6 +81,7 @@ class Order
         $this->user = $user;
         $this->created = new \DateTime('now');
         $this->status = "processing";
+        $this->statusUpdate = new \DateTime('now');
         $this->orderItems = new ArrayCollection();
     }
 
@@ -161,27 +169,43 @@ class Order
     }
 
     /**
-     * Set send
+     * Set statusUpdate
      *
-     * @param \DateTime $send
+     * @param \DateTime $updatedAt
      *
      * @return Order
      */
-    public function setSend($send)
+    public function setStatusUpdate($updatedAt)
     {
-        $this->send = $send;
+        $this->statusUpdate = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Get send
+     * Get statusUpdate
      *
      * @return \DateTime
      */
-    public function getSend()
+    public function getStatusUpdate()
     {
-        return $this->send;
+        return $this->statusUpdate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment(): string
+    {
+        return $this->comment;
+    }
+
+    /**
+     * @param string $comment
+     */
+    public function setComment(string $comment): void
+    {
+        $this->comment = $comment;
     }
 
     /**

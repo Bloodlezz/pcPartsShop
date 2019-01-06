@@ -43,4 +43,10 @@ interface OrderServiceInterface
      * @return bool
      */
     public function updateStatus(int $orderId);
+
+    /**
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function updateOrderComment(Order $order);
 }

@@ -51,7 +51,7 @@
                             <td class="pr-5 text-right">{{ order.total|number_format(2, ".", "") }}<span> lv.</span>
                             </td>
                             <td class="text-center">
-                                <a href="{{ path('orderView', {'orderId': order.id, 'orderNumber': orderCounter}) }}" target="_blank">
+                                <a href="{{ path('orderView', {'orderId': order.id}) }}" target="_blank">
                                     <button class="btn btn-primary btn-sm btn-reversed">view</button>
                                 </a>
                             </td>

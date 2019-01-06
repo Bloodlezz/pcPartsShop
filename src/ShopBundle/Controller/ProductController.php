@@ -15,7 +15,6 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class ProductController
  * @package ShopBundle\Controller
- * @Route("/product")
  */
 class ProductController extends Controller
 {
@@ -43,8 +42,8 @@ class ProductController extends Controller
     }
 
     /**
-     * @Route("/create", name="productCreate")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @Route("/administration/product/create", name="productCreate")
+     * @Security("is_granted('ROLE_ADMIN')")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -86,7 +85,7 @@ class ProductController extends Controller
     }
 
     /**
-     * @Route("/view/{id}", name="productView")
+     * @Route("/product/view/{id}", name="productView")
      * @param int $id
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -104,7 +103,7 @@ class ProductController extends Controller
     }
 
     /**
-     * @Route("/edit/{id}", name="productEdit")
+     * @Route("/product/edit/{id}", name="productEdit")
      * @Security("is_granted('ROLE_ADMIN')")
      * @param int $id
      * @param Request $request
@@ -166,7 +165,7 @@ class ProductController extends Controller
     }
 
     /**
-     * @Route("/outOfStock/{id}", name="outOfStock")
+     * @Route("/product/outOfStock/{id}", name="outOfStock")
      * @Security("is_granted('ROLE_ADMIN')")
      * @param int $id
      * @return \Symfony\Component\HttpFoundation\Response
