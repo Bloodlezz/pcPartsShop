@@ -43,8 +43,8 @@ class ProductService implements ProductServiceInterface
      * @param Product $product
      * @param string $uploadDir
      * @param UploadedFile $imageFile
-     * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function createProduct(Product $product, string $uploadDir, UploadedFile $imageFile)
     {
@@ -74,8 +74,8 @@ class ProductService implements ProductServiceInterface
      * @param string $uploadDir
      * @param string $currentImgName
      * @param UploadedFile|null $imageFile
-     * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function editProduct(Product $product, string $uploadDir, string $currentImgName, UploadedFile $imageFile = null)
     {

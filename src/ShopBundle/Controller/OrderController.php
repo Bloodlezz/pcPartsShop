@@ -64,7 +64,7 @@ class OrderController extends Controller
     public function myOrdersAction()
     {
         /** @var Order[] $orders */
-        $orders = $this->orderService->getOrdersByDateDescending();
+        $orders = $this->orderService->getUserOrdersByDateDesc();
 
         return $this->render('order/myOrders.html.twig', ['orders' => $orders]);
     }
@@ -88,5 +88,18 @@ class OrderController extends Controller
 
         $this->addFlash('notice', 'Order does not exists!');
         return $this->redirectToRoute('myOrders');
+    }
+
+    /**
+     * @Route("order/updateStatus/{orderId}", name="updateStatus")
+     * @param int $orderId
+     */
+    public function updateStatusAction(int $orderId)
+    {
+        if ($this->orderService->updateStatus($orderId) === false) {
+            $this->addFlash('notice', 'Invalid status given!');
+        }
+
+        return $this->redirectToRoute('allOrders');
     }
 }

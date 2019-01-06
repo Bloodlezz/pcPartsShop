@@ -49,6 +49,11 @@ interface CartServiceInterface
     public function removeFromCart(int $cartItemId);
 
     /**
+     * @return string
+     */
+    public function getCartNameForSession();
+
+    /**
      * @return int
      */
     public function getCartCount();

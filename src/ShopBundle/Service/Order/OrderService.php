@@ -15,6 +15,7 @@ use ShopBundle\Entity\Order;
 use ShopBundle\Entity\OrderItem;
 use ShopBundle\Entity\User;
 use ShopBundle\Repository\OrderRepository;
+use ShopBundle\Service\Cart\CartServiceInterface;
 use ShopBundle\Service\User\UserServiceInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -22,6 +23,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 class OrderService implements OrderServiceInterface
 {
+    const VALID_STATUS = ["processing", "sent", "canceled"];
+
     /**
      * @var OrderRepository
      */
@@ -53,18 +56,25 @@ class OrderService implements OrderServiceInterface
     private $session;
 
     /**
+     * @var CartServiceInterface
+     */
+    private $cartService;
+
+    /**
      * OrderService constructor.
      * @param OrderRepository $orderRepository
      * @param RequestStack $request
      * @param TokenStorageInterface $security
      * @param UserServiceInterface $userService
      * @param SessionInterface $session
+     * @param CartServiceInterface $cartService
      */
     public function __construct(OrderRepository $orderRepository,
                                 RequestStack $request,
                                 TokenStorageInterface $security,
                                 UserServiceInterface $userService,
-                                SessionInterface $session)
+                                SessionInterface $session,
+                                CartServiceInterface $cartService)
     {
         $this->orderRepository = $orderRepository;
         $this->request = $request;
@@ -72,6 +82,7 @@ class OrderService implements OrderServiceInterface
         $this->userService = $userService;
         $this->currentUser = $security->getToken()->getUser();
         $this->session = $session;
+        $this->cartService = $cartService;
     }
 
 
@@ -106,7 +117,7 @@ class OrderService implements OrderServiceInterface
             $this->orderRepository->create($order);
             // SET ALL CART ITEMS IN CART AS ORDERED
             $this->userService->edit($this->currentUser);
-            $this->session->set('cartCount', 0);
+            $this->session->set($this->cartService->getCartNameForSession(), 0);
             return true;
         }
 
@@ -116,7 +127,7 @@ class OrderService implements OrderServiceInterface
     /**
      * @return ArrayCollection|Order[]
      */
-    public function getOrdersByDateDescending()
+    public function getUserOrdersByDateDesc()
     {
         return $this->orderRepository
             ->findBy(
@@ -153,5 +164,35 @@ class OrderService implements OrderServiceInterface
         }
 
         return $cartTotal;
+    }
+
+    /**
+     * @return ArrayCollection|Order[]
+     */
+    public function getOrdersByDateDesc()
+    {
+        return $this->orderRepository->findBy([], ['created' => 'DESC', 'id' => 'DESC']);
+    }
+
+    /**
+     * @param int $orderId
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return bool
+     */
+    public function updateStatus(int $orderId)
+    {
+        $newStatus = $this->request->getCurrentRequest()->get('status');
+
+        if (in_array($newStatus, self::VALID_STATUS) === false) {
+            return false;
+        }
+
+        /** @var Order $order */
+        $order = $this->orderRepository->find($orderId);
+        $order->setStatus($newStatus);
+        $order->setSend(new \DateTime('now'));
+        $this->orderRepository->update($order);
+
+        return true;
     }
 }

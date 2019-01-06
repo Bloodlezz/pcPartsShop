@@ -25,11 +25,22 @@ interface OrderServiceInterface
     /**
      * @return ArrayCollection|Order[]
      */
-    public function getOrdersByDateDescending();
+    public function getUserOrdersByDateDesc();
 
     /**
      * @param int $orderId
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Order|object
      */
     public function viewOrder(int $orderId);
+
+    /**
+     * @return ArrayCollection|Order[]
+     */
+    public function getOrdersByDateDesc();
+
+    /**
+     * @param int $orderId
+     * @return bool
+     */
+    public function updateStatus(int $orderId);
 }

@@ -92,7 +92,8 @@ class CartService implements CartServiceInterface
             ]
         );
 
-        $this->session->set('cartCount', $this->session->get('cartCount') + 1);
+        $currentCartCount = $this->session->get($this->getCartNameForSession());
+        $this->session->set($this->getCartNameForSession(), $currentCartCount + 1);
 
         if ($foundInUserCart) {
             if ($foundInUserCart->getRemovedByUser()) {
@@ -122,7 +123,8 @@ class CartService implements CartServiceInterface
         if ($cartItem) {
             if ($cartItem->isOwner($this->getCurrentUser())) {
                 $cartItem->setQuantity($cartItem->getQuantity() + 1);
-                $this->session->set('cartCount', $this->session->get('cartCount') + 1);
+                $currentCartCount = $this->session->get($this->getCartNameForSession());
+                $this->session->set($this->getCartNameForSession(), $currentCartCount + 1);
 
                 $this->cartItemRepository->editCartItem($cartItem);
                 return true;
@@ -146,7 +148,8 @@ class CartService implements CartServiceInterface
             if ($cartItem->isOwner($this->getCurrentUser())) {
                 if (1 < $cartItem->getQuantity()) {
                     $cartItem->setQuantity($cartItem->getQuantity() - 1);
-                    $this->session->set('cartCount', $this->session->get('cartCount') - 1);
+                    $currentCartCount = $this->session->get($this->getCartNameForSession());
+                    $this->session->set($this->getCartNameForSession(), $currentCartCount - 1);
 
                     $this->cartItemRepository->editCartItem($cartItem);
                     return true;
@@ -171,7 +174,8 @@ class CartService implements CartServiceInterface
             if ($cartItem->isOwner($this->getCurrentUser())) {
                 $cartItem->setRemovedByUser(true);
                 $cartItem->setDateAdded(null);
-                $this->session->set('cartCount', $this->session->get('cartCount') - $cartItem->getQuantity());
+                $currentCartCount = $this->session->get($this->getCartNameForSession());
+                $this->session->set($this->getCartNameForSession(), $currentCartCount - $cartItem->getQuantity());
                 $this->cartItemRepository->editCartItem($cartItem);
                 return true;
             }
@@ -181,12 +185,20 @@ class CartService implements CartServiceInterface
     }
 
     /**
+     * @return string
+     */
+    public function getCartNameForSession()
+    {
+        return 'cartCount@' . $this->getCurrentUser()->getId();
+    }
+
+    /**
      * @return int
      */
     public function getCartCount()
     {
-        if ($this->session->has('cartCount')) {
-            return $this->session->get('cartCount');
+        if ($this->session->has($this->getCartNameForSession())) {
+            return $this->session->get($this->getCartNameForSession());
         }
 
         $result = 0;
@@ -197,7 +209,7 @@ class CartService implements CartServiceInterface
             $result += $cartItem->getQuantity();
         }
 
-        $this->session->set('cartCount', $result);
+        $this->session->set($this->getCartNameForSession(), $result);
 
         return $result;
     }

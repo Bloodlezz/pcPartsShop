@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'orders' %}
+
+{% block adminNavigation %}
+    {% include 'administration/adminNav.html.twig' %}
+{% endblock %}
+
+{% block main %}
+
+    <div class="container">
+
+        {% for notice in app.session.flashbag.get('notice') %}
+            <div class="alert alert-danger" id="message">
+                <i class="fa fa-exclamation-triangle"></i> {{ notice }}
+            </div>
+        {% endfor %}
+
+        <div class="table-responsive">
+            <table class="table">
+
+                <thead>
+                <tr>
+                    <th scope="col" class="text-center">ID</th>
+                    <th scope="col" class="text-center">Created</th>
+                    <th scope="col" class="text-center">Name</th>
+                    <th scope="col" class="text-center">Phone</th>
+                    <th scope="col" class="text-center">Ordered</th>
+                    <th scope="col" class="text-center">Total</th>
+                    <th scope="col" class="text-center">Status</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                {% for order in orders %}
+
+                    <tr class="{{ order.status == 'processing' ? 'processing-color' : order.status == 'sent' ? 'sent-color' : 'canceled-color' }}">
+
+                        <th scope="row" class="text-center">{{ order.id }}</th>
+                        <td class="text-center">{{ order.created|date("d-m-Y H:i:s", "Europe/Sofia") }}</td>
+                        <td class="text-center">{{ order.user.fullName }}</td>
+                        <td class="text-center">{{ order.user.phone }}</td>
+
+                        <td class="text-center">
+                            <a href="{{ path('orderView', {'orderId': order.id}) }}" target="_blank"
+                            >
+                                <button type="button"
+                                        class="btn btn-primary btn-sm {{ order.status == 'processing' ? 'processing-color' : order.status == 'sent' ? 'sent-color' : 'canceled-color' }}"
+                                >view
+                                </button>
+                            </a>
+                        </td>
+
+                        <td class="text-center">{{ order.total|number_format(2, ".", "") }} lv.</td>
+
+                        <td class="text-center">
+                            <div class="btn-group dropleft">
+                                <button
+                                        class="btn btn-secondary btn-sm dropdown-toggle btn-shadow"
+                                        type="button"
+                                        id="dropdownMenu2"
+                                        data-toggle="dropdown"
+                                        aria-haspopup="true"
+                                        aria-expanded="false"
+                                >{{ order.status|capitalize }}</button>
+
+                                <div class="dropdown-menu px-4 py-2">
+
+                                    <a href="{{ path('updateStatus', {'orderId': order.id, 'status': 'sent'}) }}">
+                                        <div class="sent-color text-center btn-shadow">Sent</div>
+                                    </a>
+
+                                    <div class="dropdown-divider"></div>
+
+                                    <a href="{{ path('updateStatus', {'orderId': order.id, 'status': 'processing'}) }}">
+                                        <div class="processing-color text-center btn-shadow">Processing</div>
+                                    </a>
+
+                                    <div class="dropdown-divider"></div>
+
+                                    <a href="{{ path('updateStatus', {'orderId': order.id, 'status': 'canceled'}) }}">
+                                        <div class="text-center btn-shadow">Canceled</div>
+                                    </a>
+
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+{% endblock %}

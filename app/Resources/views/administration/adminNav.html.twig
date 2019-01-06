@@ -1,0 +1,29 @@
+<div class="container">
+
+    <h2>Administration panel</h2>
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a
+                    class="nav-link"
+                    href="#"
+                    role="button"
+            >User rights</a>
+        </li>
+        <li class="nav-item">
+            <a
+                    class="nav-link  {{ app.request.attributes.get("_route") == 'allOrders' ? 'active' : '' }}"
+                    href="{{ path('allOrders') }}"
+                    role="button"
+            >Orders</a>
+        </li>
+        <li class="nav-item">
+            <a
+                    class="nav-link {{ app.request.attributes.get("_route") == 'productCreate' ? 'active' : '' }}"
+                    href="{{ path('productCreate') }}"
+                    role="button"
+            >Add product</a>
+        </li>
+    </ul>
+
+</div>

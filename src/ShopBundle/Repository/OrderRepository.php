@@ -27,4 +27,14 @@ class OrderRepository extends \Doctrine\ORM\EntityRepository
         $this->_em->persist($order);
         $this->_em->flush($order);
     }
+
+    /**
+     * @param Order $order
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function update(Order $order)
+    {
+        $this->_em->merge($order);
+        $this->_em->flush($order);
+    }
 }

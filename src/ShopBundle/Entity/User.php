@@ -447,4 +447,12 @@ class User implements UserInterface
     {
         return in_array("ROLE_ADMIN", $this->getRoles());
     }
+
+    /**
+     * @return string
+     */
+    public function getFullName()
+    {
+        return $this->getFirstName() . " " . $this->getLastName();
+    }
 }
