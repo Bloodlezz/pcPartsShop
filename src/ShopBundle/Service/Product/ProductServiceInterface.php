@@ -42,4 +42,10 @@ interface ProductServiceInterface
      * @return ArrayCollection|Product[]|null
      */
     public function getAllTopProducts();
+
+    /**
+     * @param string $searchTerm
+     * @return ArrayCollection|Product|null
+     */
+    public function searchProducts(string $searchTerm);
 }

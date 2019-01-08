@@ -33,6 +33,6 @@ class HomeController extends Controller
         /** @var Product[] $allTopProducts */
         $allTopProducts = $this->productService->getAllTopProducts();
 
-        return $this->render('default/index.html.twig', ['allTopProducts' => $allTopProducts]);
+        return $this->render('default/index.html.twig', ['products' => $allTopProducts]);
     }
 }

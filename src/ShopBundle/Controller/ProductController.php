@@ -6,6 +6,7 @@ use ShopBundle\Entity\Product;
 use ShopBundle\Service\Category\CategoryServiceInterface;
 use ShopBundle\Service\Product\ProductServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -51,6 +52,21 @@ class ProductController extends Controller
         }
 
         $this->addFlash('message', 'Product does not exists!');
+        return $this->redirectToRoute('homepage');
+    }
+
+    /**
+     * @Route("/search", name="search")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function searchAction(Request $request)
+    {
+        if ($request->getMethod() === "GET" && $request->get('search') !== null) {
+        $searchTerm = $request->get('search');
+        $foundProducts = $this->productService->searchProducts($searchTerm);
+        return $this->render('default/index.html.twig', ['products' => $foundProducts]);
+        }
+
         return $this->redirectToRoute('homepage');
     }
 }

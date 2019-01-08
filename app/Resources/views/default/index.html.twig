@@ -18,9 +18,15 @@
             </div>
         {% endfor %}
 
+        {% if app.request.get('_route') == 'search' and products|length == 0 %}
+            <div class="alert alert-warning text-center h5">
+                <i class="fa fa-exclamation-triangle"></i> There are no products matching your search!
+            </div>
+        {% endif %}
+
         <div class="row">
 
-            {% for product in allTopProducts %}
+            {% for product in products %}
                 <div class="pull-left m-auto">
                     <div class="tProduct-wrapper">
 

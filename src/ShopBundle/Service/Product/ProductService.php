@@ -109,4 +109,29 @@ class ProductService implements ProductServiceInterface
     {
         return $this->productRepository->findBy(['topProduct' => true], ['price' => 'ASC']);
     }
+
+    /**
+     * @param string $searchTerm
+     * @return ArrayCollection|Product[]|null
+     */
+    public function searchProducts(string $searchTerm)
+    {
+        $searchTermArr = explode(' ', $searchTerm);
+        $needle = array_shift($searchTermArr);
+        $foundProducts = $this->productRepository->search($needle);
+
+        foreach ($searchTermArr as $termKey => $termValue) {
+            /** @var Product $product */
+            foreach ($foundProducts as $key => $product) {
+                if (strlen($termValue) <= 1) {
+                    break;
+                }
+                if (stripos($product->getTitle(), $termValue) === false) {
+                    unset($foundProducts[$key]);
+                }
+            }
+        }
+
+        return $foundProducts;
+    }
 }

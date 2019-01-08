@@ -2,6 +2,7 @@
 
 namespace ShopBundle\Repository;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping;
 use ShopBundle\Entity\Product;
@@ -37,6 +38,24 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
     {
         $this->_em->merge($product);
         $this->_em->flush($product);
+    }
+
+    /**
+     * @param string $needle
+     * @return ArrayCollection|Product[]|null
+     */
+    public function search(string $needle)
+    {
+        $query = $this->_em
+            ->createQuery("SELECT p
+                                FROM ShopBundle:Product AS p
+                                WHERE p.isOutOfStock = false
+                                AND p.title LIKE :needle
+                                ORDER BY p.price ASC"
+            )
+            ->setParameter('needle', '%'.$needle.'%');
+
+        return $query->getResult();
     }
 
 //    /**

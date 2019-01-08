@@ -74,7 +74,9 @@
                                 <div class="dropdown-menu" aria-labelledby="profile">
                                     <a class="dropdown-item" href="{{ path('myOrders') }}">My orders</a>
                                     <a class="dropdown-item" href="{{ path('profileEdit') }}">Profile edit</a>
-                                    <a class="dropdown-item" href="{{ path('ordersManage') }}">Administration panel</a>
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <a class="dropdown-item" href="{{ path('ordersManage') }}">Administration panel</a>
+                                    {% endif %}
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ path('logout') }}">Sign out</a>
                                 </div>
@@ -101,7 +103,7 @@
                     </a>
 
                     {#Search#}
-                    <form method="GET" action="search.php" class="form-inline my-2 my-lg-0 hide-search">
+                    <form method="GET" action="{{ path('search') }}" class="form-inline my-2 my-lg-0 hide-search">
                         <div class="block-el">
                             <input type="search" name="search" class="form-control mr-sm-2" placeholder="Search">
                         </div>
@@ -114,7 +116,7 @@
             </nav>
 
             {#Search < 700px#}
-            <form method="GET" action="search.php" class="show-search my-2 my-lg-0">
+            <form method="GET" action="{{ path('search') }}" class="show-search my-2 my-lg-0">
                 <div class="form-row">
                     <div class="col-10">
                         <input type="search" name="search" class="form-control" placeholder="Search">
