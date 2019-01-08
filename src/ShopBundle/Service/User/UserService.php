@@ -9,6 +9,7 @@
 namespace ShopBundle\Service\User;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use ShopBundle\Entity\Role;
 use ShopBundle\Entity\User;
 use ShopBundle\Repository\RoleRepository;
@@ -51,8 +52,8 @@ class UserService implements UserServiceInterface
 
     /**
      * @param User $user
-     * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function register(User $user)
     {
@@ -81,8 +82,8 @@ class UserService implements UserServiceInterface
     /**
      * @param User $user
      * @param string $currentHashedPass
-     * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function edit(User $user, string $currentHashedPass = null)
     {
@@ -95,6 +96,37 @@ class UserService implements UserServiceInterface
 
                 $user->setPassword($hashedPassword);
             }
+        }
+
+        return $this->userRepository->edit($user);
+    }
+
+    /**
+     * @return ArrayCollection|User[]
+     */
+    public function getAllUsers()
+    {
+        return $this->userRepository->findBy([], ['id' => 'ASC']);
+    }
+
+    /**
+     * @param int $userId
+     * @param string $roleName
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editRoles(int $userId, string $roleName)
+    {
+        /** @var User $user */
+        $user = $this->userRepository->find($userId);
+
+        /** @var Role $role */
+        $role = $this->roleRepository->findOneBy(['name' => $roleName]);
+
+        if (in_array($roleName, $user->getRoles())) {
+            $user->removeRole($role);
+        } else {
+            $user->addRole($role);
         }
 
         return $this->userRepository->edit($user);

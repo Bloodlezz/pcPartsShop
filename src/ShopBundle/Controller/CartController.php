@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * Class CartController
  * @package ShopBundle\Controller
  * @Route("/cart")
+ * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
  */
 class CartController extends Controller
 {
@@ -41,7 +42,6 @@ class CartController extends Controller
 
     /**
      * @Route("/add/{productId}", name="addToCart")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @param int $productId
      * @param Product $product
      * @return \Symfony\Component\HttpFoundation\Response
@@ -65,7 +65,6 @@ class CartController extends Controller
 
     /**
      * @Route("/", name="cart")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function cartAction()

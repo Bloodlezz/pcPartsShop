@@ -2,28 +2,46 @@
 
     <h2>Administration panel</h2>
 
+    {% for message in app.session.flashbag.get('message') %}
+        <div class="alert alert-success" id="message">
+            <i class="fa fa-thumbs-up"></i> {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for notice in app.session.flashbag.get('notice') %}
+        <div class="alert alert-danger" id="message">
+            <i class="fa fa-exclamation-triangle"></i> {{ notice }}
+        </div>
+    {% endfor %}
+
     <ul class="nav nav-tabs">
         <li class="nav-item">
             <a
-                    class="nav-link"
-                    href="#"
+                    class="nav-link {{ app.request.attributes.get("_route") == 'usersRights' ? 'active' : '' }}"
+                    href="{{ path('usersRights') }}"
                     role="button"
-            >User rights</a>
+            >Users rights</a>
         </li>
         <li class="nav-item">
             <a
-                    class="nav-link  {{ app.request.attributes.get("_route") == 'allOrders' ? 'active' : '' }}"
-                    href="{{ path('allOrders') }}"
+                    class="nav-link  {{ app.request.attributes.get("_route") == 'ordersManage' ? 'active' : '' }}"
+                    href="{{ path('ordersManage') }}"
                     role="button"
             >Orders</a>
         </li>
         <li class="nav-item">
             <a
-                    class="nav-link {{ app.request.attributes.get("_route") == 'productCreate' ? 'active' : '' }}"
-                    href="{{ path('productCreate') }}"
+                    class="nav-link {{ app.request.attributes.get("_route") == 'productAdd' ? 'active' : '' }}"
+                    href="{{ path('productAdd') }}"
                     role="button"
             >Add product</a>
         </li>
+        {% if app.request.attributes.get('_route') == 'productEdit' %}
+            <a
+                    class="nav-link active"
+                    role="button"
+            >Edit product</a>
+        {% endif %}
     </ul>
 
 </div>

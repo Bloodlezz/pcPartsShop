@@ -1,34 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block body_id 'productEdit' %}
+{% block body_id 'productCreate' %}
+
+{% block adminNavigation %}
+    {% include 'administration/adminNav.html.twig' %}
+{% endblock %}
 
 {% block main %}
 
     <div class="container mt-2">
 
-        {% for message in app.session.flashbag.get('message') %}
-            <div class="alert alert-success" id="message">
-                <i class="fa fa-thumbs-up"></i> {{ message }}
-            </div>
-        {% endfor %}
-
-        {% set category, title, description, price =
-            app.session.get('productToEdit')['category'],
-            app.session.get('productToEdit')['title'],
-            app.session.get('productToEdit')['description'],
-            app.session.get('productToEdit')['price']
-        %}
-
-        <form method="POST" action="{{ path('productEdit', {'id': product.id}) }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ path('productAdd') }}" enctype="multipart/form-data">
 
             <div class="form-group">
                 <label for="category">Product category</label>
                 <select name="product[category]"
-                        class="form-control {{ form_errors(form.category) ? 'is-invalid' : product.category != category ? 'is-valid' : '' }}"
+                        class="form-control {{ form_errors(form.category) ? 'is-invalid' : product.category is defined ? 'is-valid' : '' }}"
                         id="category">
-                    {#<option value="" {{ product is defined and product.category is not empty ? '' : 'selected' }}>#}
-                        {#choose#}
-                    {#</option>#}
+                    <option value="" {{ product is defined and product.category is not empty ? '' : 'selected' }}>
+                        choose
+                    </option>
                     {% for category in categories %}
                         <option value="{{ category.id }}" {{ product is defined and product.category is not empty ? category.id == product.category.id ? 'selected' : '' }}>{{ category.name }}</option>
                     {% endfor %}
@@ -45,7 +36,7 @@
                         type="text"
                         name="product[title]"
                         id="title"
-                        class="form-control {{ form_errors(form.title) ? 'is-invalid' : product.title != title ? 'is-valid' : '' }}"
+                        class="form-control {{ form_errors(form.title) ? 'is-invalid' : product.title is defined ? 'is-valid' : '' }}"
                         value="{{ product.title|default('') }}"
                 >
 
@@ -60,7 +51,7 @@
                         type="text"
                         name="product[description]"
                         id="description"
-                        class="form-control {{ form_errors(form.description) ? 'is-invalid' : product.description != description ? 'is-valid' : '' }}"
+                        class="form-control {{ form_errors(form.description) ? 'is-invalid' : product.description is defined ? 'is-valid' : '' }}"
                 >{{ product.description|default('') }}</textarea>
 
                 {% if form_errors(form.description) %}
@@ -74,7 +65,7 @@
                         type="text"
                         name="product[price]"
                         id="price"
-                        class="form-control {{ form_errors(form.price) ? 'is-invalid' : product.price != price ? 'is-valid' : '' }}"
+                        class="form-control {{ form_errors(form.price) ? 'is-invalid' : product.price is defined ? 'is-valid' : '' }}"
                         value="{{ product.price|default('') }}"
                 >
 
@@ -93,20 +84,10 @@
                 <label class="form-check-label" for="topProduct">Top product</label>
             </div>
 
-            <div class="form-group form-check {{ product is defined and product.isOutOfStock is not empty ? 'alert-danger' : 'alert-warning' }}">
-                <input
-                        type="checkbox"
-                        name="product[isOutOfStock]"
-                        id="outOfStock"
-                        class="form-check-input"
-                        {{ product is defined and product.isOutOfStock is not empty ? 'checked' : '' }}>
-                <label class="form-check-label" for="outOfStock">Out of stock</label>
-            </div>
-
             <div class="form-group">
                 <label for="image">Product picture (only jpeg & png, max size 2.0 MB)</label>
                 <input type="file" name="product[image]" id="image"
-                       class="form-control {{ form_errors(form.image) ? 'is-invalid' : '' }}">
+                       class="form-control {{ form_errors(form.image) ? 'is-invalid' : product.image is defined ? 'is-valid' : '' }}">
 
                 {% if form_errors(form.image) %}
                     <div class="invalid-feedback">{{ form_errors(form.image) }}</div>
@@ -115,7 +96,7 @@
 
             <span class="element-divider mt-3 mb-2"></span>
 
-            <button type="submit" class="btn btn-primary">Edit product</button>
+            <button type="submit" class="btn btn-primary">Add product</button>
 
             <a href="{{ path('homepage') }}">
                 <button type="button" class="btn btn-primary">Cancel</button>

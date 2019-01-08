@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'addedProducts' %}
+
+{% block main %}
+
+    <div class="container">
+
+        <h2 class="mt-5">Administration panel</h2>
+
+        <h6 class="mt-1 text-center">Products added by: {{ user.fullName }}</h6>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Added</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for product in products %}
+
+                <tr>
+                    <th>{{ product.id }}</th>
+                    <td>{{ product.category.name }}</td>
+                    <td>
+                        <a
+                                href="{{ path('productView', {'id': product.id}) }}"
+                                class="underline"
+                                target="_blank"
+                        >{{ product.title }}</a>
+                    </td>
+                    <td>{{ product.added|date("d-m-Y H:i:s", "Europe/Sofia") }}</td>
+                </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-12 text-right">
+            <input
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    value="Close"
+                    onclick="self.close()"
+            >
+        </div>
+
+    </div>
+
+{% endblock %}
+

@@ -10,12 +10,6 @@
 
     <div class="container">
 
-        {% for notice in app.session.flashbag.get('notice') %}
-            <div class="alert alert-danger" id="message">
-                <i class="fa fa-exclamation-triangle"></i> {{ notice }}
-            </div>
-        {% endfor %}
-
         <div class="table-responsive">
             <table class="table">
 
@@ -43,7 +37,7 @@
                         <td class="text-center">{{ order.user.phone }}</td>
 
                         <td class="text-center">
-                            <a href="{{ path('singleOrder', {'orderId': order.id}) }}" target="_blank"
+                            <a href="{{ path('orderManage', {'orderId': order.id}) }}" target="_blank"
                             >
                                 <button type="button"
                                         class="btn btn-primary btn-sm {{ order.status == 'processing' ? 'processing-color' : order.status == 'sent' ? 'sent-color' : 'canceled-color' }}"
@@ -67,19 +61,19 @@
 
                                 <div class="dropdown-menu px-4 py-2">
 
-                                    <a href="{{ path('updateStatus', {'orderId': order.id, 'status': 'sent'}) }}">
+                                    <a href="{{ path('updateOrderStatus', {'orderId': order.id, 'status': 'sent'}) }}">
                                         <div class="sent-color text-center btn-shadow">Sent</div>
                                     </a>
 
                                     <div class="dropdown-divider"></div>
 
-                                    <a href="{{ path('updateStatus', {'orderId': order.id, 'status': 'processing'}) }}">
+                                    <a href="{{ path('updateOrderStatus', {'orderId': order.id, 'status': 'processing'}) }}">
                                         <div class="processing-color text-center btn-shadow">Processing</div>
                                     </a>
 
                                     <div class="dropdown-divider"></div>
 
-                                    <a href="{{ path('updateStatus', {'orderId': order.id, 'status': 'canceled'}) }}">
+                                    <a href="{{ path('updateOrderStatus', {'orderId': order.id, 'status': 'canceled'}) }}">
                                         <div class="text-center btn-shadow">Canceled</div>
                                     </a>
 

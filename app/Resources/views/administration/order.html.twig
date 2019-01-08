@@ -59,11 +59,11 @@
 
             </table>
 
-            <form method="POST" action="{{ path('singleOrder', {'orderId': order.id}) }}">
+            <form method="POST" action="{{ path('orderManage', {'orderId': order.id}) }}">
                 <div class="form-group col-12">
                     <label for="comment">Comments</label>
                     <textarea
-                            name="comment"
+                            name="order[comment]"
                             id="comment"
                             class="form-control"
                             rows="3"
@@ -73,6 +73,8 @@
                 <div class="col-12 text-right">
                     <button type="submit" class="btn btn-primary btn-sm">Save</button>
                 </div>
+
+                {{ form_row(form._token) }}
             </form>
 
         </div>

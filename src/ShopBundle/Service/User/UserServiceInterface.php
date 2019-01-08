@@ -9,6 +9,7 @@
 namespace ShopBundle\Service\User;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use ShopBundle\Entity\User;
 
 interface UserServiceInterface
@@ -31,4 +32,16 @@ interface UserServiceInterface
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function edit(User $user, string $currentHashedPass = null);
+
+    /**
+     * @return ArrayCollection|User[]
+     */
+    public function getAllUsers();
+
+    /**
+     * @param int $userId
+     * @param string $roleName
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editRoles(int $userId, string $roleName);
 }

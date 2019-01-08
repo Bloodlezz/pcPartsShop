@@ -2,14 +2,10 @@
 
 namespace ShopBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use ShopBundle\Entity\Product;
-use ShopBundle\Form\ProductType;
 use ShopBundle\Service\Category\CategoryServiceInterface;
 use ShopBundle\Service\Product\ProductServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -18,8 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProductController extends Controller
 {
-    const ALLOWED_FILE_TYPES = ['jpeg', 'png'];
-
     /**
      * @var ProductServiceInterface $productService
      */
@@ -41,48 +35,6 @@ class ProductController extends Controller
         $this->categoryService = $categoryService;
     }
 
-    /**
-     * @Route("/administration/product/create", name="productCreate")
-     * @Security("is_granted('ROLE_ADMIN')")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function createAction(Request $request)
-    {
-        $categories = $this->categoryService->getAllCategories();
-
-        /** @var Product $product */
-        $product = new Product();
-        $form = $this->createForm(ProductType::class, $product, ['validation_groups' => ['Default', 'Edit']]);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted()) {
-            /** @var UploadedFile $imageFile */
-            $imageFile = $form->getData()->getImage();
-
-            if ($form->isValid()) {
-                $product->setUploader($this->getUser());
-                $uploadDir = $this->getParameter('products_images');
-                $this->productService->createProduct($product, $uploadDir, $imageFile);
-
-                $this->addFlash('message', 'Product added successfully.');
-                return $this->redirectToRoute("productView", ['id' => $product->getId()]);
-            }
-
-            return $this->render('product/create.html.twig',
-                [
-                    'form' => $form->createView(),
-                    'categories' => $categories,
-                    'product' => $product
-                ]);
-        }
-
-        return $this->render('product/create.html.twig',
-            [
-                'categories' => $categories,
-                'form' => $form->createView()
-            ]);
-    }
 
     /**
      * @Route("/product/view/{id}", name="productView")
@@ -96,93 +48,6 @@ class ProductController extends Controller
 
         if ($currentProduct) {
             return $this->render('product/view.html.twig', ['product' => $currentProduct]);
-        }
-
-        $this->addFlash('message', 'Product does not exists!');
-        return $this->redirectToRoute('homepage');
-    }
-
-    /**
-     * @Route("/product/edit/{id}", name="productEdit")
-     * @Security("is_granted('ROLE_ADMIN')")
-     * @param int $id
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function editAction(Request $request, int $id)
-    {
-        /** @var Product $product */
-        $product = $this->productService->getProductById($id);
-
-        $session = $this->get('session');
-        $session->set('productToEdit',
-            [
-                'category' => $product->getCategory(),
-                'title' => $product->getTitle(),
-                'description' => $product->getDescription(),
-                'price' => $product->getPrice()
-            ]
-        );
-
-        $currentImageName = $product->getImage();
-        $categories = $this->categoryService->getAllCategories();
-        $form = $this->createForm(ProductType::class, $product, ['validation_groups' => ['Default']]);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted()) {
-            /** @var UploadedFile $imageFile */
-            $imageFile = $form->getData()->getImage();
-
-            if ($form->isValid()) {
-                $uploadDir = $this->getParameter('products_images');
-                $this->productService->editProduct($product, $uploadDir, $currentImageName, $imageFile);
-                $session->remove('productToEdit');
-
-                $this->addFlash('message', 'Product edited successfully.');
-                return $this->redirectToRoute('productView', ['id' => $id]);
-            }
-
-            return $this->render('product/edit.html.twig',
-                [
-                    'form' => $form->createView(),
-                    'categories' => $categories,
-                    'product' => $product
-                ]);
-        }
-
-        if ($product) {
-            return $this->render('product/edit.html.twig',
-                [
-                    'form' => $form->createView(),
-                    'product' => $product,
-                    'categories' => $categories
-                ]
-            );
-        }
-
-        $this->addFlash('message', 'Product does not exists!');
-        return $this->redirectToRoute('homepage');
-    }
-
-    /**
-     * @Route("/product/outOfStock/{id}", name="outOfStock")
-     * @Security("is_granted('ROLE_ADMIN')")
-     * @param int $id
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function outOfStockAction(int $id)
-    {
-        /** @var Product $product */
-        $product = $this->productService->getProductById($id);
-
-        if ($product) {
-            // $uploadDir = $this->getParameter('products_images');
-            // $this->productService->deleteProduct($product, $uploadDir);
-            $product->setIsOutOfStock(true);
-            $this->productService->outOfStock($product);
-
-            $this->addFlash('message', 'Product is out of stock.');
-            return $this->redirectToRoute('homepage');
         }
 
         $this->addFlash('message', 'Product does not exists!');

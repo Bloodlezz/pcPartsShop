@@ -39,6 +39,7 @@
 
             <tbody>
             {% set cartTotal = 0 %}
+            {% set hasOutOfStock = false %}
             {% for cartItem in cartItems %}
                 <tr>
                     <td class="cart-img-wrapper cart-img-cell">
@@ -48,40 +49,44 @@
                         </a>
                     </td>
 
-                    <td>
+                    <td class="align-middle">
                         <a href="{{ path('productView', {'id': cartItem.product.id }) }}"
                            target="_blank">{{ cartItem.product.title }}</a>
                     </td>
 
-                    <td>
+                    <td class="align-middle">
                         <a href="{{ path('removeFromCart', {'cartItemId': cartItem.id }) }}" class="custom-hover"
                            title="remove from cart">
                             <i class="fa fa-times" aria-hidden="true"></i>
                         </a>
                     </td>
 
-                    <td class="text-center">
-                        {% if cartItem.quantity == 1 %}
-                            <i class="fa fa-minus" aria-hidden="true"></i>
-                        {% else %}
-                            <a href="{{ path('decreaseQty', {'cartItemId': cartItem.id }) }}" class="custom-hover"
-                               title="decrease quantity">
+                    {% if cartItem.product.outOfStock %}
+                        {% set hasOutOfStock = true %}
+                        <td class="text-center align-middle h6 text-danger alert alert-warning">Out of stock!</td>
+                    {% else %}
+                        <td class="text-center align-middle">
+                            {% if cartItem.quantity == 1 %}
                                 <i class="fa fa-minus" aria-hidden="true"></i>
+                            {% else %}
+                                <a href="{{ path('decreaseQty', {'cartItemId': cartItem.id }) }}" class="custom-hover"
+                                   title="decrease quantity">
+                                    <i class="fa fa-minus" aria-hidden="true"></i>
+                                </a>
+                            {% endif %}
+
+                            <span class="cart-qty text-center">{{ cartItem.quantity }}</span>
+
+                            <a href="{{ path('increaseQty', {'cartItemId': cartItem.id }) }}" class="custom-hover"
+                               title="increase quantity">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
                             </a>
-                        {% endif %}
+                        </td>
+                    {% endif %}
 
-                        <span class="cart-qty text-center">{{ cartItem.quantity }}</span>
+                    <td class="text-right align-middle">{{ cartItem.product.price|number_format(2, ".", "") }}<span> lv.</span></td>
 
-                        <a href="{{ path('increaseQty', {'cartItemId': cartItem.id }) }}" class="custom-hover"
-                           title="increase quantity">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                        </a>
-
-                    </td>
-
-                    <td class="text-right">{{ cartItem.product.price|number_format(2, ".", "") }}<span> lv.</span></td>
-
-                    <td class="text-right font-weight-bold">{{ cartItem.calcProductAmount|number_format(2, ".", "") }}
+                    <td class="text-right align-middle font-weight-bold">{{ cartItem.calcProductAmount|number_format(2, ".", "") }}
                         <span
                                 class="font-weight-normal"> lv.</span></td>
 
@@ -101,7 +106,13 @@
                 <td colspan="6" class="text-right">
                     <form method="POST" action="{{ path('orderCreate') }}">
                         <input type="number" name="total" hidden value="{{ cartTotal|number_format(2, ".", "") }}">
-                        <button type="submit" class="btn btn-primary">Place order</button>
+                        {% if hasOutOfStock %}
+                            <div class="text-center align-middle h6 text-danger alert alert-warning">
+                                Please remove out of stock products to continue!
+                            </div>
+                        {% else %}
+                            <button type="submit" class="btn btn-primary">Place order</button>
+                        {% endif %}
                     </form>
                 </td>
             </tr>

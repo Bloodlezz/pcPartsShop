@@ -11,6 +11,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class OrderController
+ * @package ShopBundle\Controller
+ * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+ */
 class OrderController extends Controller
 {
     /**
@@ -36,7 +41,6 @@ class OrderController extends Controller
 
     /**
      * @Route("order/create", name="orderCreate")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function createAction(Request $request)
@@ -58,7 +62,6 @@ class OrderController extends Controller
 
     /**
      * @Route("/myOrders", name="myOrders")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function myOrdersAction()
@@ -71,7 +74,6 @@ class OrderController extends Controller
 
     /**
      * @Route("order/view/{orderId}", name="orderView")
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      * @param int $orderId
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -88,18 +90,5 @@ class OrderController extends Controller
 
         $this->addFlash('notice', 'Order does not exists!');
         return $this->redirectToRoute('myOrders');
-    }
-
-    /**
-     * @Route("order/updateStatus/{orderId}", name="updateStatus")
-     * @param int $orderId
-     */
-    public function updateStatusAction(int $orderId)
-    {
-        if ($this->orderService->updateStatus($orderId) === false) {
-            $this->addFlash('notice', 'Invalid status given!');
-        }
-
-        return $this->redirectToRoute('allOrders');
     }
 }

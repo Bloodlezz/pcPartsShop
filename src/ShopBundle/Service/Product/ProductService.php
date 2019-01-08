@@ -103,26 +103,6 @@ class ProductService implements ProductServiceInterface
     }
 
     /**
-     * @param Product $product
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function outOfStock(Product $product)
-    {
-//        $currentImgFullPath = $uploadDir . $product->getImage();
-//
-//        try {
-//            if ($this->fileSystem->exists($currentImgFullPath)) {
-//                $this->fileSystem->remove($currentImgFullPath);
-//            }
-//        } catch (FileException $ex) {
-//            $ex->getMessage();
-//        }
-
-        return $this->productRepository->edit($product);
-    }
-
-    /**
      * @return ArrayCollection|Product[]|null
      */
     public function getAllTopProducts()

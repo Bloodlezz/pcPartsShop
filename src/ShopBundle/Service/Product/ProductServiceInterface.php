@@ -39,12 +39,6 @@ interface ProductServiceInterface
     public function editProduct(Product $product, string $uploadDir, string $currentImgName, UploadedFile $imageFile = null);
 
     /**
-     * @param Product $product
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function outOfStock(Product $product);
-
-    /**
      * @return ArrayCollection|Product[]|null
      */
     public function getAllTopProducts();

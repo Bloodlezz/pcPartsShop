@@ -382,6 +382,17 @@ class User implements UserInterface
     }
 
     /**
+     * @param $role
+     * @return User
+     */
+    public function removeRole($role): User
+    {
+        $this->roles->removeElement($role);
+
+        return $this;
+    }
+
+    /**
      * @return ArrayCollection|Product[]
      */
     public function getUploadedProducts()

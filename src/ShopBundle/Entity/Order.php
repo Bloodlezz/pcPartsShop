@@ -193,9 +193,9 @@ class Order
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getComment(): string
+    public function getComment()
     {
         return $this->comment;
     }

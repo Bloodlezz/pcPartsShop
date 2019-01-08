@@ -73,7 +73,7 @@ class UserController extends Controller
                 'phone' => $this->getUser()->getPhone()
             ]
         );
-        
+
         /** @var User $user */
         $user = $this->getUser();
         $currentHashedPass = $user->getPassword();
@@ -97,5 +97,20 @@ class UserController extends Controller
         }
 
         return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+    }
+
+    /**
+     * @Route("/editRoles/{userId}/{roleName}", name="editRoles")
+     * @Security("is_granted('ROLE_ADMIN')")
+     * @param int $userId
+     * @param string $roleName
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editRolesAction(int $userId, string $roleName)
+    {
+        $this->userService->editRoles($userId, $roleName);
+
+        $this->addFlash('message', 'Change successful.');
+        return $this->redirectToRoute('usersRights');
     }
 }

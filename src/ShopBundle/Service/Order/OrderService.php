@@ -145,7 +145,8 @@ class OrderService implements OrderServiceInterface
         /** @var Order $currentOrder */
         $currentOrder = $this->orderRepository->find($orderId);
 
-        if ($currentOrder->isOwner($this->currentUser)) {
+        if ($currentOrder->isOwner($this->currentUser)
+            || $this->currentUser->isAdmin()) {
             return $currentOrder;
         }
     }
