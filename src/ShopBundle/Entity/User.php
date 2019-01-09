@@ -145,6 +145,16 @@ class User implements UserInterface
     private $orders;
 
     /**
+     * @var ArrayCollection|Product[]
+     *
+     * @ORM\ManyToMany(targetEntity="ShopBundle\Entity\Product", inversedBy="wishers")
+     * @ORM\JoinTable(name="users_products",
+     *     joinColumns={@ORM\JoinColumn(name="userId", referencedColumnName="id")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="productId", referencedColumnName="id")})
+     */
+    private $wishList;
+
+    /**
      * User constructor.
      */
     public function __construct()
@@ -154,6 +164,7 @@ class User implements UserInterface
         $this->uploadedProducts = new ArrayCollection();
         $this->cartItems = new ArrayCollection();
         $this->orders = new ArrayCollection();
+        $this->wishList = new ArrayCollection();
     }
 
     /**
@@ -447,6 +458,36 @@ class User implements UserInterface
     public function addOrder($order): User
     {
         $this->orders[] = $order;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|Product[]
+     */
+    public function getWishList()
+    {
+        return $this->wishList;
+    }
+
+    /**
+     * @param Product $product
+     * @return User
+     */
+    public function addToWishList($product): User
+    {
+        $this->wishList[] = $product;
+
+        return $this;
+    }
+
+    /**
+     * @param $product
+     * @return User
+     */
+    public function removeFromWishList($product): User
+    {
+        $this->wishList->removeElement($product);
 
         return $this;
     }

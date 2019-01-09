@@ -26,10 +26,26 @@
         </div>
 
         <div class="columns-set price-addToCart-wrapper mb-3">
-            <div class="show-row">
-                <div class="col-change-price"
+            <div class="show-row text-center">
+                {#WISH LIST#}
+                {% if app.user and product in app.user.wishList %}
+                    <div class="text-right h1">
+                        <a href="{{ path('wishListEdit', {'productId': product.id}) }}" class="active-color" title="Remove from wish list">
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-right h1">
+                        <a href="{{ path('wishListEdit', {'productId': product.id}) }}" class="active-color" title="Add to wish list">
+                            <i class="fa fa-star-o" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                {% endif %}
+                {#PRICE#}
+                <div class="col-change-price text-left"
                 ><span class="extra-large-fonts">{{ product.price|number_format(2, ".", "") }}</span> LV.
                 </div>
+                {#ADD TO CART BUTTON#}
                 <div class="col-change-cart">
                     <div class="row btn btn-primary from-max-width btn-no-hover">
                         {% if product.outOfStock %}
@@ -39,6 +55,8 @@
                         {% endif %}
                     </div>
                 </div>
+                {#ORDERED#}
+                <div class="text-right h6 m-2">{{ product.orderedCount }} ordered</div>
             </div>
         </div>
 

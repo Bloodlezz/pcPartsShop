@@ -426,3 +426,8 @@ li a:hover {
     font-size: 32px !important;
     color: #28ab6b;
 }
+
+.big-checkbox {
+    width: 15px;
+    height: 15px;
+}

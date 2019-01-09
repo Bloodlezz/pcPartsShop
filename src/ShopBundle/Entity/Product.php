@@ -135,6 +135,13 @@ class Product
     private $orderItems;
 
     /**
+     * @var ArrayCollection|User[]
+     *
+     * @ORM\ManyToMany(targetEntity="ShopBundle\Entity\User", mappedBy="wishList")
+     */
+    private $wishers;
+
+    /**
      * Product constructor.
      */
     public function __construct()
@@ -144,6 +151,7 @@ class Product
         $this->isOutOfStock = false;
         $this->cartItems = new ArrayCollection();
         $this->orderItems = new ArrayCollection();
+        $this->wishers = new ArrayCollection();
     }
 
 
@@ -409,6 +417,25 @@ class Product
     public function addOrderItem($orderItem): Product
     {
         $this->orderItems[] = $orderItem;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|User[]
+     */
+    public function getWishers()
+    {
+        return $this->wishers;
+    }
+
+    /**
+     * @param User $user
+     * @return Product
+     */
+    public function addWisher($user): Product
+    {
+        $this->wishers[] = $user;
 
         return $this;
     }

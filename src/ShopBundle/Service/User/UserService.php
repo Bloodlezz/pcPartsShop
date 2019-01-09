@@ -10,10 +10,13 @@ namespace ShopBundle\Service\User;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
+use ShopBundle\Entity\Product;
 use ShopBundle\Entity\Role;
 use ShopBundle\Entity\User;
+use ShopBundle\Repository\ProductRepository;
 use ShopBundle\Repository\RoleRepository;
 use ShopBundle\Repository\UserRepository;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserService implements UserServiceInterface
@@ -36,6 +39,16 @@ class UserService implements UserServiceInterface
     private $roleRepository;
 
     /**
+     * @var ProductRepository $productRepository
+     */
+    private $productRepository;
+
+    /**
+     * @var TokenStorageInterface
+     */
+    private $security;
+
+    /**
      * UserService constructor.
      * @param UserRepository $userRepository
      * @param UserPasswordEncoderInterface $passwordEncoder
@@ -43,11 +56,23 @@ class UserService implements UserServiceInterface
      */
     public function __construct(UserRepository $userRepository,
                                 UserPasswordEncoderInterface $passwordEncoder,
-                                RoleRepository $roleRepository)
+                                RoleRepository $roleRepository,
+                                ProductRepository $productRepository,
+                                TokenStorageInterface $security)
     {
         $this->userRepository = $userRepository;
         $this->passwordEncoder = $passwordEncoder;
         $this->roleRepository = $roleRepository;
+        $this->productRepository = $productRepository;
+        $this->security = $security;
+    }
+
+    /**
+     * @return User|object|null
+     */
+    public function getCurrentUser()
+    {
+        return $this->security->getToken()->getUser();
     }
 
     /**
@@ -111,24 +136,48 @@ class UserService implements UserServiceInterface
 
     /**
      * @param int $userId
-     * @param string $roleName
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @param int $roleId
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function editRoles(int $userId, string $roleName)
+    public function editRoles(int $userId, int $roleId)
     {
         /** @var User $user */
         $user = $this->userRepository->find($userId);
 
         /** @var Role $role */
-        $role = $this->roleRepository->findOneBy(['name' => $roleName]);
+        $role = $this->roleRepository->find($roleId);
 
-        if (in_array($roleName, $user->getRoles())) {
+        if (in_array($role->getName(), $user->getRoles())) {
             $user->removeRole($role);
         } else {
             $user->addRole($role);
         }
 
         return $this->userRepository->edit($user);
+    }
+
+    /**
+     * @param int $productId
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @return bool
+     */
+    public function editWishList(int $productId)
+    {
+        $user = $this->getCurrentUser();
+
+        /** @var Product $product */
+        $product = $this->productRepository->find($productId);
+
+        if (in_array($product, $user->getWishList()->toArray())) {
+            $user->removeFromWishList($product);
+            $this->userRepository->edit($user);
+            return false;
+        }
+
+        $user->addToWishList($product);
+        $this->userRepository->edit($user);
+
+        return true;
     }
 }

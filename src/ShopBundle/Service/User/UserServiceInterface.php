@@ -15,6 +15,11 @@ use ShopBundle\Entity\User;
 interface UserServiceInterface
 {
     /**
+     * @return User|object|null
+     */
+    public function getCurrentUser();
+
+    /**
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -40,8 +45,14 @@ interface UserServiceInterface
 
     /**
      * @param int $userId
-     * @param string $roleName
+     * @param int $roleId
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function editRoles(int $userId, string $roleName);
+    public function editRoles(int $userId, int $roleId);
+
+    /**
+     * @param int $productId
+     * @return bool
+     */
+    public function editWishList(int $productId);
 }

@@ -100,17 +100,34 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/editRoles/{userId}/{roleName}", name="editRoles")
+     * @Route("/editRoles/{userId}/{roleId}", name="editRoles")
      * @Security("is_granted('ROLE_ADMIN')")
      * @param int $userId
-     * @param string $roleName
+     * @param int $roleId
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function editRolesAction(int $userId, string $roleName)
+    public function editRolesAction(int $userId, int $roleId)
     {
-        $this->userService->editRoles($userId, $roleName);
+        $this->userService->editRoles($userId, $roleId);
 
         $this->addFlash('message', 'Change successful.');
         return $this->redirectToRoute('usersRights');
+    }
+
+    /**
+     * @Route("/wishList/edit/{productId}", name="wishListEdit")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @param int $productId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editWishListAction(int $productId)
+    {
+        if ($this->userService->editWishList($productId)) {
+            $this->addFlash('message', 'Product added to your wish list.');
+        } else {
+            $this->addFlash('message', 'Product removed from your wish list.');
+        }
+
+        return $this->redirectToRoute('productView', ['id' => $productId]);
     }
 }

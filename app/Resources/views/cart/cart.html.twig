@@ -108,7 +108,7 @@
                         <input type="number" name="total" hidden value="{{ cartTotal|number_format(2, ".", "") }}">
                         {% if hasOutOfStock %}
                             <div class="text-center align-middle h6 text-danger alert alert-warning">
-                                Please remove out of stock products to continue!
+                                Please remove the out of stock products to continue!
                             </div>
                         {% else %}
                             <button type="submit" class="btn btn-primary">Place order</button>

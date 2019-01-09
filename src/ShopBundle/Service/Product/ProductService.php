@@ -39,6 +39,7 @@ class ProductService implements ProductServiceInterface
         $this->fileSystem = $fileSystem;
     }
 
+
     /**
      * @param Product $product
      * @param string $uploadDir

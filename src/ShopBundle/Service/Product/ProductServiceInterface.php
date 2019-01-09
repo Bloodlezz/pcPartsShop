@@ -36,7 +36,10 @@ interface ProductServiceInterface
      * @param UploadedFile|null $imageFile
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function editProduct(Product $product, string $uploadDir, string $currentImgName, UploadedFile $imageFile = null);
+    public function editProduct(Product $product,
+                                string $uploadDir,
+                                string $currentImgName,
+                                UploadedFile $imageFile = null);
 
     /**
      * @return ArrayCollection|Product[]|null

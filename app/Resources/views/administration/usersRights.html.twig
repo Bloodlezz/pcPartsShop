@@ -41,7 +41,12 @@
                             {% endif %}
                         </td>
                         <td>
-                            <input {{ user.admin ? 'checked' : '' }} type="checkbox" id="ROLE_ADMIN" value="{{ user.id }}">
+                            <input {{ user.admin ? 'checked' : '' }}
+                                    type="checkbox"
+                                    id="1"
+                                    value="{{ user.id }}"
+                                    class="big-checkbox"
+                            >
                         </td>
                     </tr>
 
@@ -57,7 +62,7 @@
                 $(':checkbox').click(function () {
                         let id = $(this).val();
                         let role = $(this).attr('id');
-                        let path = "{{ path('editRoles', {'userId': 'id', 'roleName': 'role'}) }}";
+                        let path = "{{ path('editRoles', {'userId': 'id', 'roleId': 'role'}) }}";
                         path = path.replace('id', id);
                         path = path.replace('role', role);
 
