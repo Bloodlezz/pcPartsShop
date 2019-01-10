@@ -8,6 +8,12 @@
 
         <h2>Sign in</h2>
 
+        {% for message in app.session.flashbag.get('message') %}
+            <div class="alert alert-success text-center" id="message">
+                <i class="fa fa-thumbs-up"></i> {{ message }}
+            </div>
+        {% endfor %}
+
         <form name="authenticate" action="{{ path('login') }}" method="post">
             <div class="form-group">
                 <label for="email">Email address</label>

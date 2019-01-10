@@ -34,7 +34,10 @@
                         {#choose#}
                     {#</option>#}
                     {% for category in categories %}
-                        <option value="{{ category.id }}" {{ product is defined and product.category is not empty ? category.id == product.category.id ? 'selected' : '' }}>{{ category.name }}</option>
+                        <option
+                                value="{{ category.id }}"
+                                {{ product is defined and product.category is not empty ? category.id == product.category.id ? 'selected' : '' }}
+                        >{{ category.name|capitalize|replace({'-' : ' '}) }}</option>
                     {% endfor %}
                 </select>
 

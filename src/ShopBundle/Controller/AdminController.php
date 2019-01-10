@@ -69,6 +69,7 @@ class AdminController extends Controller
      */
     public function productAddAction(Request $request)
     {
+        /** @var Category[] $categories */
         $categories = $this->categoryService->getAllCategories();
 
         /** @var Product $product */

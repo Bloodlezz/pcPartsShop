@@ -48,7 +48,8 @@ class UserController extends Controller
             if ($form->isValid()) {
                 $this->userService->register($user);
 
-                return $this->redirectToRoute("homepage");
+                $this->addFlash('message', 'Registration successful.');
+                return $this->redirectToRoute('login');
             }
 
             return $this->render('user/register.html.twig', ['form' => $form->createView(), 'user' => $user]);

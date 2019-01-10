@@ -23,7 +23,9 @@
                     all
                 </option>
                 {% for category in categories %}
-                    <option value="{{ category.id }}" {{ app.request.get('filter') == category.id ? 'selected' : '' }}>{{ category.name }}</option>
+                    <option value="{{ category.id }}" {{ app.request.get('filter') == category.id ? 'selected' : '' }}>
+                        {{ category.name|capitalize|replace({'-' : ' '}) }}
+                    </option>
                 {% endfor %}
             </select>
         </div>

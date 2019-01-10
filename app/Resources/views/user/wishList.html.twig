@@ -52,7 +52,7 @@
                            target="_blank">{{ product.title }}</a>
                     </td>
 
-                    <td class="text-center align-middle">{{ product.category.name }}</td>
+                    <td class="text-center align-middle">{{ product.category.name|capitalize|replace({'-' : ' '}) }}</td>
 
                     <td class="text-center align-middle">{{ product.price|number_format(2, ".", "") }}<span> lv.</span></td>
 
