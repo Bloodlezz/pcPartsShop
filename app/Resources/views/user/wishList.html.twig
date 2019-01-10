@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block body_id 'wishList' %}
+
+{% block main %}
+
+<div class="container mt-3">
+
+    <h2>My Wish List</h2>
+
+    {% for message in app.session.flashbag.get('message') %}
+        <div class="alert alert-success text-center" id="message">
+            <i class="fa fa-thumbs-up"></i> {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for notice in app.session.flashbag.get('notice') %}
+        <div class="alert alert-danger text-center" id="message">
+            <i class="fa fa-exclamation-triangle"></i> {{ notice }}
+        </div>
+    {% endfor %}
+
+    <table class="table">
+        {% if products|length == 0 %}
+            <thead>
+            <tr>
+                <th scope="col" colspan="12" class="text-center">You wish list is empty.</th>
+            </tr>
+            </thead>
+        {% else %}
+            <thead>
+            <tr>
+                <th scope="col" colspan="3">Products</th>
+                <th scope="col" class="text-center">Category</th>
+                <th scope="col" class="text-center">Price</th>
+                <th scope="col" class="text-center">Remove</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for product in products %}
+                <tr>
+                    <td class="cart-img-wrapper cart-img-cell" colspan="1">
+                        <a href="{{ path('productView', {'id': product.id }) }}" target="_blank">
+                            <img src="{{ asset('images/uploads/products/' ~ product.image) }}"
+                                 alt="Product picture">
+                        </a>
+                    </td>
+
+                    <td class="align-middle" colspan="2">
+                        <a href="{{ path('productView', {'id': product.id }) }}"
+                           target="_blank">{{ product.title }}</a>
+                    </td>
+
+                    <td class="text-center align-middle">{{ product.category.name }}</td>
+
+                    <td class="text-center align-middle">{{ product.price|number_format(2, ".", "") }}<span> lv.</span></td>
+
+                    <td class="text-center align-middle">
+                        <a href="{{ path('wishListEdit', {'productId': product.id}) }}" class="custom-hover"
+                           title="remove from cart">
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        {% endif %}
+    </table>
+
+{% endblock %}

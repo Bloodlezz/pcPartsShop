@@ -1,5 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-    <h3>ERROR 403: Sorry you don't have administration rights! Go back to <a href="{{ path('homepage') }}">main page</a>.</h3>
+{% block body_id 'forbidden' %}
+
+{% block main %}
+
+    <div class="container mt-5">
+        <h3>ERROR 403: Sorry you don't have administration rights! Go back to <a href="{{ path('homepage') }}">main
+                page</a>.</h3>
+
 {% endblock %}

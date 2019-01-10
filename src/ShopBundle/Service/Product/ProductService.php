@@ -135,4 +135,18 @@ class ProductService implements ProductServiceInterface
 
         return $foundProducts;
     }
+
+    /**
+     * @param int|null $categoryId
+     * @return ArrayCollection|Product[]|null
+     */
+    public function outOfStockProducts($categoryId)
+    {
+        if ($categoryId !== 'all') {
+            return $this->productRepository
+                ->findBy(['category' => $categoryId, 'isOutOfStock' => true]);
+        }
+
+        return $this->productRepository->findBy(['isOutOfStock' => true]);
+    }
 }

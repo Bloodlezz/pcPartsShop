@@ -3,6 +3,7 @@
 namespace ShopBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use ShopBundle\Entity\Product;
 use ShopBundle\Entity\User;
 use ShopBundle\Form\UserType;
 use ShopBundle\Service\User\UserServiceInterface;
@@ -120,7 +121,7 @@ class UserController extends Controller
      * @param int $productId
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function editWishListAction(int $productId)
+    public function editWishListAction(int $productId, Request $request)
     {
         if ($this->userService->editWishList($productId)) {
             $this->addFlash('message', 'Product added to your wish list.');
@@ -128,6 +129,23 @@ class UserController extends Controller
             $this->addFlash('message', 'Product removed from your wish list.');
         }
 
-        return $this->redirectToRoute('productView', ['id' => $productId]);
+        if ($request->query->has('pView')) {
+            return $this->redirectToRoute('productView', ['id' => $productId]);
+        }
+
+        return $this->redirectToRoute('wishListView');
+    }
+
+    /**
+     * @Route("/wishList", name="wishListView")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function wishListAction()
+    {
+        /** @var Product[] $wishList */
+        $wishList = $this->userService->viewWishList();
+
+        return $this->render('user/wishList.html.twig', ['products' => $wishList]);
     }
 }

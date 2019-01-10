@@ -8,10 +8,10 @@
 
 {% block main %}
 
-    <div class="container mt-2">
+    <div class="container mt-3">
 
         {% for message in app.session.flashbag.get('message') %}
-            <div class="alert alert-success" id="message">
+            <div class="alert alert-success text-center" id="message">
                 <i class="fa fa-thumbs-up"></i> {{ message }}
             </div>
         {% endfor %}
@@ -38,9 +38,12 @@
                     {% endfor %}
                 </select>
 
-                {% if form_errors(form.category) %}
-                    <div class="invalid-feedback">{{ form_errors(form.category) }}</div>
-                {% endif %}
+                {% for errorItem in form.category.vars.errors %}
+                    <div class="invalid-feedback">{{ errorItem.message }}</div>
+                {% endfor %}
+                {#{% if form_errors(form.category) %}#}
+                    {#<div class="invalid-feedback">{{ form_errors(form.category) }}</div>#}
+                {#{% endif %}#}
             </div>
 
             <div class="form-group">
@@ -53,9 +56,12 @@
                         value="{{ product.title|default('') }}"
                 >
 
-                {% if form_errors(form.title) %}
-                    <div class="invalid-feedback">{{ form_errors(form.title) }}</div>
-                {% endif %}
+                {% for errorItem in form.title.vars.errors %}
+                    <div class="invalid-feedback">{{ errorItem.message }}</div>
+                {% endfor %}
+                {#{% if form_errors(form.title) %}#}
+                    {#<div class="invalid-feedback">{{ form_errors(form.title) }}</div>#}
+                {#{% endif %}#}
             </div>
 
             <div class="form-group">
@@ -67,9 +73,12 @@
                         class="form-control {{ form_errors(form.description) ? 'is-invalid' : product.description != description ? 'is-valid' : '' }}"
                 >{{ product.description|default('') }}</textarea>
 
-                {% if form_errors(form.description) %}
-                    <div class="invalid-feedback">{{ form_errors(form.description) }}</div>
-                {% endif %}
+                {% for errorItem in form.description.vars.errors %}
+                    <div class="invalid-feedback">{{ errorItem.message }}</div>
+                {% endfor %}
+                {#{% if form_errors(form.description) %}#}
+                    {#<div class="invalid-feedback">{{ form_errors(form.description) }}</div>#}
+                {#{% endif %}#}
             </div>
 
             <div class="form-group">
@@ -82,9 +91,12 @@
                         value="{{ product.price|default('') }}"
                 >
 
-                {% if form_errors(form.price) %}
-                    <div class="invalid-feedback">{{ form_errors(form.price) }}</div>
-                {% endif %}
+                {% for errorItem in form.price.vars.errors %}
+                    <div class="invalid-feedback">{{ errorItem.message }}</div>
+                {% endfor %}
+                {#{% if form_errors(form.price) %}#}
+                    {#<div class="invalid-feedback">{{ form_errors(form.price) }}</div>#}
+                {#{% endif %}#}
             </div>
 
             <div class="form-group form-check">
@@ -112,9 +124,12 @@
                 <input type="file" name="product[image]" id="image"
                        class="form-control {{ form_errors(form.image) ? 'is-invalid' : '' }}">
 
-                {% if form_errors(form.image) %}
-                    <div class="invalid-feedback">{{ form_errors(form.image) }}</div>
-                {% endif %}
+                {% for errorItem in form.image.vars.errors %}
+                    <div class="invalid-feedback">{{ errorItem.message }}</div>
+                {% endfor %}
+                {#{% if form_errors(form.image) %}#}
+                    {#<div class="invalid-feedback">{{ form_errors(form.image) }}</div>#}
+                {#{% endif %}#}
             </div>
 
             <span class="element-divider mt-3 mb-2"></span>

@@ -6,12 +6,12 @@
 
     <div class="container mt-3">
 
-        <h2>Profile edit</h2>
+        <h2>My Profile</h2>
 
         <span class="element-divider mt-3 mb-2"></span>
 
         {% for message in app.session.flashbag.get('message') %}
-            <div class="alert alert-success" id="message">
+            <div class="alert alert-success text-center" id="message">
                 <i class="fa fa-thumbs-up"></i> {{ message }}
             </div>
         {% endfor %}
@@ -33,9 +33,12 @@
                        value="{{ user.firstName }}"
                        placeholder="letters only"
                 >
-                {% if form_errors(form.firstName) %}
-                    <div class="invalid-feedback">{{ form_errors(form.firstName) }}</div>
-                {% endif %}
+                {% for errorItem in form.firstName.vars.errors %}
+                    <div class="invalid-feedback">{{ errorItem.message }}</div>
+                {% endfor %}
+                {#{% if form_errors(form.firstName) %}#}
+                    {#<div class="invalid-feedback">{{ form_errors(form.firstName) }}</div>#}
+                {#{% endif %}#}
             </div>
             <div class="form-group">
                 <label for="lastName">Last name</label>
@@ -46,9 +49,12 @@
                        value="{{ user.lastName }}"
                        placeholder="letters only"
                 >
-                {% if form_errors(form.lastName) %}
-                    <div class="invalid-feedback">{{ form_errors(form.lastName) }}</div>
-                {% endif %}
+                {% for errorItem in form.lastName.vars.errors %}
+                    <div class="invalid-feedback">{{ errorItem.message }}</div>
+                {% endfor %}
+                {#{% if form_errors(form.lastName) %}#}
+                    {#<div class="invalid-feedback">{{ form_errors(form.lastName) }}</div>#}
+                {#{% endif %}#}
             </div>
             <div class="form-group">
                 <label for="email">Email address</label>
@@ -59,9 +65,12 @@
                        value="{{ user.email }}"
                        placeholder="please enter valid email"
                 >
-                {% if form_errors(form.email) %}
-                    <div class="invalid-feedback">{{ form_errors(form.email) }}</div>
-                {% endif %}
+                {% for errorItem in form.email.vars.errors %}
+                    <div class="invalid-feedback">{{ errorItem.message }}</div>
+                {% endfor %}
+                {#{% if form_errors(form.email) %}#}
+                    {#<div class="invalid-feedback">{{ form_errors(form.email) }}</div>#}
+                {#{% endif %}#}
             </div>
             <div class="form-group">
                 <label for="phone">Phone number</label>
@@ -72,9 +81,12 @@
                        value="{{ user.phone }}"
                        placeholder="numbers and + allowed"
                 >
-                {% if form_errors(form.phone) %}
-                    <div class="invalid-feedback">{{ form_errors(form.phone) }}</div>
-                {% endif %}
+                {% for errorItem in form.phone.vars.errors %}
+                    <div class="invalid-feedback">{{ errorItem.message }}</div>
+                {% endfor %}
+                {#{% if form_errors(form.phone) %}#}
+                    {#<div class="invalid-feedback">{{ form_errors(form.phone) }}</div>#}
+                {#{% endif %}#}
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
@@ -82,10 +94,14 @@
                        name="user[password][first]"
                        class="form-control {{ form_errors(form.password.first) ? 'is-invalid' : '' }}"
                        id="password"
-                       placeholder="password">
-                {% if form_errors(form.password.first) %}
-                    <div class="invalid-feedback">{{ form_errors(form.password.first) }}</div>
-                {% endif %}
+                       placeholder="password"
+                >
+                {% for errorItem in form.password.first.vars.errors %}
+                    <div class="invalid-feedback">{{ errorItem.message }}</div>
+                {% endfor %}
+                {#{% if form_errors(form.password.first) %}#}
+                    {#<div class="invalid-feedback">{{ form_errors(form.password.first) }}</div>#}
+                {#{% endif %}#}
             </div>
             <div class="form-group">
                 <label for="confirmPassword">Confirm password</label>
@@ -95,9 +111,12 @@
                        id="confirmPassword"
                        placeholder="confirm password"
                 >
-                {% if form_errors(form.password.first) %}
-                    <div class="invalid-feedback">{{ form_errors(form.password.first) }}</div>
-                {% endif %}
+                {% for errorItem in form.password.first.vars.errors %}
+                    <div class="invalid-feedback">{{ errorItem.message }}</div>
+                {% endfor %}
+                {#{% if form_errors(form.password.first) %}#}
+                    {#<div class="invalid-feedback">{{ form_errors(form.password.first) }}</div>#}
+                {#{% endif %}#}
             </div>
 
             <span class="element-divider mt-3 mb-2"></span>

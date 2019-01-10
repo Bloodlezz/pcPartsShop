@@ -51,4 +51,10 @@ interface ProductServiceInterface
      * @return ArrayCollection|Product|null
      */
     public function searchProducts(string $searchTerm);
+
+    /**
+     * @param int|null $categoryId
+     * @return ArrayCollection|Product[]|null
+     */
+    public function outOfStockProducts($categoryId);
 }

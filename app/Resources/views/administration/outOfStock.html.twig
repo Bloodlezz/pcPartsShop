@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block body_id 'homepage' %}
+{% block body_id 'outOfStock' %}
 
-{% block bannerSlider %}
-    {% include 'default/bannerSlider.html.twig' %}
+{% block adminNavigation %}
+    {% include 'administration/adminNav.html.twig' %}
 {% endblock %}
 
 {% block main %}
 
-    <div class="container mt-5">
+    <div class="container">
 
         {% for message in app.session.flashbag.get('message') %}
             <div class="alert alert-success text-center" id="message">
@@ -16,26 +16,32 @@
             </div>
         {% endfor %}
 
-        {% for notice in app.session.flashbag.get('notice') %}
-            <div class="alert alert-danger text-center" id="message">
-                <i class="fa fa-exclamation-triangle"></i> {{ notice }}
-            </div>
-        {% endfor %}
+        <div class="form-group text-center">
+            <label for="category">Filter by category</label>
+            <select class="form-control" id="category">
+                <option value="all" {{ app.request.get('filter') == 'all' ? 'selected' : '' }}>
+                    all
+                </option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {{ app.request.get('filter') == category.id ? 'selected' : '' }}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-        {% if app.request.get('_route') == 'search' and products|length == 0 %}
+        {% if products|length == 0 %}
             <div class="alert alert-warning text-center h5">
-                <i class="fa fa-exclamation-triangle"></i> There are no products matching your search!
+                <i class="fa fa-exclamation-triangle"></i> There are no out of stock products in this category!
             </div>
         {% endif %}
 
-        <div class="row">
+        <div class="row mt-5">
 
             {% for product in products %}
                 <div class="pull-left m-auto">
                     <div class="tProduct-wrapper">
 
                         <div class="tp-img-wrapper">
-                            <a href="{{ path('productView', {'id': product.id}) }}">
+                            <a href="{{ path('productView', {'id': product.id}) }}" target="_blank">
                                 <img src="{{ asset('images/uploads/products/' ~ product.image) }}"
                                      alt="Product picture">
                             </a>
@@ -48,14 +54,14 @@
 
                         <div class="tp-name-price-wrapper">
                             <div class="row">
-                                <a href="{{ path('productView', {'id': product.id}) }}">{{ product.title }}</a>
+                                <a href="{{ path('productView', {'id': product.id}) }}" target="_blank">{{ product.title }}</a>
                             </div>
                             <div class="row">
                                 <div class="col-6 pl-0"
                                 ><span class="large-fonts">{{ product.price|number_format(2, ".", "") }}</span> LV
                                 </div>
                                 <div class="col-6 center-element">
-                                    <a href="{{ path('productView', {'id': product.id}) }}">
+                                    <a href="{{ path('productView', {'id': product.id}) }}" target="_blank">
                                         <button type="button" class="btn btn-primary">see more</button>
                                     </a>
                                 </div>
@@ -70,4 +76,19 @@
 
     </div>
 
+    <script>
+        $(document).ready(function () {
+                $('#category').change(function () {
+                        let categoryId = $(this).val();
+                        let path = "{{ path('outOfStockView', {'filter': 'categoryId'}) }}";
+                        path = path.replace('categoryId', categoryId);
+
+                        window.location.replace(path);
+                    }
+                )
+            }
+        );
+    </script>
+
 {% endblock %}
+

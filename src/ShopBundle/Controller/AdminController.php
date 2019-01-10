@@ -3,6 +3,7 @@
 namespace ShopBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use ShopBundle\Entity\Category;
 use ShopBundle\Entity\Order;
 use ShopBundle\Entity\OrderItem;
 use ShopBundle\Entity\Product;
@@ -248,6 +249,29 @@ class AdminController extends Controller
 
         return $this->render('administration/addedProducts.html.twig',
             ['products' => $productsAddedByUser, 'user' => $user]
+        );
+    }
+
+    /**
+     * @Route("/outOfStock", name="outOfStockView")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function outOfStockAction(Request $request)
+    {
+        $categoryId = $request->query->get('filter');
+
+        /** @var Category[] $categories */
+        $categories = $this->categoryService->getAllCategories();
+
+        /** @var Product[] $products */
+        $products = $this->productService->outOfStockProducts($categoryId);
+
+        return $this->render('administration/outOfStock.html.twig',
+            [
+                'products' => $products,
+                'categories' => $categories
+            ]
         );
     }
 }

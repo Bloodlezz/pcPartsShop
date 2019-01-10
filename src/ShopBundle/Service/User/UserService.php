@@ -180,4 +180,13 @@ class UserService implements UserServiceInterface
 
         return true;
     }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function viewWishList()
+    {
+        /** @var Product[] $wishList */
+        return $this->getCurrentUser()->getWishList()->toArray();
+    }
 }

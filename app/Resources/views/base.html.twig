@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %}Online shop{% endblock %}</title>
+    <title>{% block title %}Online Shop For PC Hardware{% endblock %}</title>
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('bootstrap-4.0.0/css/bootstrap.css') }}">
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -21,7 +21,7 @@
         </script>
     {% endblock %}
 
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.png') }}"/>
 
     <meta name="author" content="Konstantin Lazarov">
     <meta name="description" content="Online shop for PC hardware">
@@ -72,9 +72,9 @@
                                     <i class="fa fa-user big-fonts" aria-hidden="true"></i>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="profile">
-                                    <a class="dropdown-item" href="">Wish List</a>
+                                    <a class="dropdown-item" href="{{ path('profileEdit') }}">My Profile</a>
                                     <a class="dropdown-item" href="{{ path('myOrders') }}">My Orders</a>
-                                    <a class="dropdown-item" href="{{ path('profileEdit') }}">Profile Edit</a>
+                                    <a class="dropdown-item" href="{{ path('wishListView') }}">My Wish List</a>
                                     {% if is_granted('ROLE_ADMIN') %}
                                         <a class="dropdown-item" href="{{ path('ordersManage') }}">Administration Panel</a>
                                     {% endif %}
@@ -135,6 +135,7 @@
 {% endblock %}
 
 {% block body %}
+    {% block bannerSlider %}{% endblock %}
     {% block adminNavigation %}{% endblock %}
     {% block main %}{% endblock %}
 {% endblock %}

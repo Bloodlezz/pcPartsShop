@@ -55,4 +55,9 @@ interface UserServiceInterface
      * @return bool
      */
     public function editWishList(int $productId);
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function viewWishList();
 }
